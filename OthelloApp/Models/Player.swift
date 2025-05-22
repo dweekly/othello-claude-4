@@ -1,9 +1,13 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import Foundation
 
 /// Represents a player in the Othello game
 public enum Player: String, CaseIterable, Codable {
-    case black = "black"
-    case white = "white"
+    case black
+    case white
 
     /// The opposite player
     public var opposite: Player {
@@ -54,8 +58,8 @@ public enum Player: String, CaseIterable, Codable {
 
 /// Represents the type of player (human or AI)
 public enum PlayerType: String, CaseIterable, Codable {
-    case human = "human"
-    case ai = "ai"
+    case human
+    case ai
 
     /// Localized name for UI display
     public var localizedName: String {
@@ -104,9 +108,9 @@ public struct PlayerInfo: Codable, Hashable {
 
 /// AI difficulty levels
 public enum AIDifficulty: String, CaseIterable, Codable {
-    case easy = "easy"
-    case medium = "medium"
-    case hard = "hard"
+    case easy
+    case medium
+    case hard
 
     /// Localized name for UI display
     public var localizedName: String {
@@ -125,13 +129,13 @@ public enum AIDifficulty: String, CaseIterable, Codable {
         switch self {
         case .easy:
             return NSLocalizedString("ai.difficulty.easy.description",
-                                   comment: "Easy AI makes random moves")
+                                     comment: "Easy AI makes random moves")
         case .medium:
             return NSLocalizedString("ai.difficulty.medium.description",
-                                   comment: "Medium AI uses basic strategy")
+                                     comment: "Medium AI uses basic strategy")
         case .hard:
             return NSLocalizedString("ai.difficulty.hard.description",
-                                   comment: "Hard AI uses advanced algorithms")
+                                     comment: "Hard AI uses advanced algorithms")
         }
     }
 

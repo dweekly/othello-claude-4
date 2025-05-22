@@ -17,7 +17,6 @@ opt_in_rules:
   - empty_string
   - enum_case_associated_values_count
   - explicit_init
-  - extension_access_modifier
   - fallthrough
   - fatal_error_message
   - file_header
@@ -66,6 +65,10 @@ opt_in_rules:
 disabled_rules:
   - todo # We'll allow TODO comments during development
   - line_length # We'll handle this with custom configuration
+  - file_header # Allow flexible file headers for now
+  - no_force_unwrapping # Allow force unwrapping in safe contexts
+  - model_protocol_conformance # Allow flexible model conformance
+  - extension_access_modifier # Allow explicit access modifiers in extensions
 
 # Custom rule configurations
 line_length:

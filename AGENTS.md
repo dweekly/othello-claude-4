@@ -104,6 +104,44 @@ All commits must pass:
 - **Progress Tracking**: Mark tasks as complete and update phase status regularly
 - **Context Awareness**: Always understand where current work fits in the overall project roadmap
 
+### Phase Transition Requirements
+Before proposing to move to the next development phase, **ALL** of the following must be verified:
+
+1. **🧹 Clean Repository State**
+   ```bash
+   git status  # Should show "working tree clean"
+   ```
+   - No untracked files
+   - No uncommitted changes
+   - All work properly committed and documented
+
+2. **🎨 Linting Standards**
+   ```bash
+   swiftlint  # Should show "Done linting! Found 0 violations"
+   ```
+   - Zero SwiftLint violations
+   - Zero SwiftLint warnings
+   - All code follows project style guidelines
+
+3. **✅ Test Quality Gate**
+   ```bash
+   swift test  # All tests must pass
+   ```
+   - 100% test suite passing
+   - No failing tests
+   - No flaky or skipped tests
+   - Performance tests within acceptable bounds
+
+4. **📋 Phase Completion Verification**
+   - All tasks for current phase marked complete in TODO.md
+   - Phase objectives fully achieved
+   - Documentation updated to reflect current state
+   - Any architectural decisions properly documented
+
+**🚫 Phase transitions are BLOCKED until ALL criteria are met.**
+
+This ensures we maintain the highest quality standards and never advance with technical debt or incomplete work.
+
 ### When Making Changes
 1. **Check TODO.md first**: Understand current phase and priority tasks
 2. **Read existing code**: Understand current patterns and conventions

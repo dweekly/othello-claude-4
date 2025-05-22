@@ -1,4 +1,8 @@
 // swift-tools-version: 5.9
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import PackageDescription
 
 let package = Package(
@@ -11,6 +15,10 @@ let package = Package(
         .library(
             name: "OthelloCore",
             targets: ["OthelloCore"]
+        ),
+        .library(
+            name: "OthelloUI",
+            targets: ["OthelloUI"]
         ),
         .executable(
             name: "OthelloApp",
@@ -26,18 +34,27 @@ let package = Package(
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
-        .executableTarget(
-            name: "OthelloApp",
+        .target(
+            name: "OthelloUI",
             dependencies: ["OthelloCore"],
             path: "OthelloApp",
-            sources: ["App", "Views", "ViewModels"],
+            sources: ["Views", "ViewModels"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .executableTarget(
+            name: "OthelloApp",
+            dependencies: ["OthelloCore", "OthelloUI"],
+            path: "OthelloApp",
+            sources: ["App"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(
             name: "OthelloAppTests",
-            dependencies: ["OthelloCore"],
+            dependencies: ["OthelloCore", "OthelloUI"],
             path: "OthelloApp/Tests"
         ),
     ]

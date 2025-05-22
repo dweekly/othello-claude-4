@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import SwiftUI
 import Foundation
 import OthelloCore
@@ -6,11 +10,11 @@ import OthelloCore
 @Observable
 class GameViewModel {
     private let gameEngine: GameEngineProtocol
-    
+
     private(set) var gameState: GameState
     private(set) var validMoves: Set<BoardPosition> = []
     private(set) var isProcessingMove = false
-    
+
     init(gameEngine: GameEngineProtocol = GameEngine()) {
         self.gameEngine = gameEngine
         self.gameState = gameEngine.newGame(
@@ -19,22 +23,22 @@ class GameViewModel {
         )
         self.updateValidMoves()
     }
-    
+
     func makeMove(at position: BoardPosition) {
         guard !isProcessingMove,
               validMoves.contains(position) else { return }
-        
+
         isProcessingMove = true
-        
+
         let move = Move(position: position, player: gameState.currentPlayer)
         if let newState = gameState.applyingMove(move) {
             gameState = newState
             updateValidMoves()
         }
-        
+
         isProcessingMove = false
     }
-    
+
     func resetGame() {
         gameState = gameEngine.newGame(
             blackPlayer: PlayerInfo(player: .black, type: .human),
@@ -43,18 +47,18 @@ class GameViewModel {
         updateValidMoves()
         isProcessingMove = false
     }
-    
+
     private func updateValidMoves() {
         validMoves = Set(gameEngine.availableMoves(for: gameState))
     }
-    
+
     var currentPlayerName: String {
         switch gameState.currentPlayer {
         case .black: return "Black"
         case .white: return "White"
         }
     }
-    
+
     var gameStatusMessage: String {
         switch gameState.gamePhase {
         case .playing:

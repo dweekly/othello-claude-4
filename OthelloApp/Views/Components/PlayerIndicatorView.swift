@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import SwiftUI
 import OthelloCore
 #if canImport(UIKit)
@@ -9,7 +13,7 @@ struct PlayerIndicatorView: View {
     let score: Int
     let isCurrentPlayer: Bool
     let isGameFinished: Bool
-    
+
     var body: some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
@@ -24,12 +28,12 @@ struct PlayerIndicatorView: View {
 #endif
                     )
                     .frame(width: 24, height: 24)
-                
+
                 Text(playerName)
                     .font(.subheadline)
                     .fontWeight(isCurrentPlayer && !isGameFinished ? .bold : .regular)
             }
-            
+
             Text("\(score)")
                 .font(.title2)
                 .fontWeight(.semibold)
@@ -44,14 +48,14 @@ struct PlayerIndicatorView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
     }
-    
+
     private var playerName: String {
         switch player {
         case .black: return "Black"
         case .white: return "White"
         }
     }
-    
+
     private var accessibilityLabel: String {
         let turnIndicator = isCurrentPlayer && !isGameFinished ? ", current player" : ""
         return "\(playerName): \(score) pieces\(turnIndicator)"
@@ -66,7 +70,7 @@ struct PlayerIndicatorView: View {
             isCurrentPlayer: true,
             isGameFinished: false
         )
-        
+
         PlayerIndicatorView(
             player: .white,
             score: 2,

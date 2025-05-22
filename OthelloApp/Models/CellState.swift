@@ -1,10 +1,14 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import Foundation
 
 /// Represents the state of a cell on the Othello board
 public enum CellState: String, CaseIterable, Codable {
-    case empty = "empty"
-    case black = "black"
-    case white = "white"
+    case empty
+    case black
+    case white
 
     /// The opposite piece color, or nil for empty cells
     public var opposite: CellState? {

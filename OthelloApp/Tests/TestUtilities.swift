@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import Foundation
 @testable import OthelloCore
 

@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import Foundation
 
 /// Represents a position on the Othello board
@@ -53,7 +57,7 @@ extension BoardPosition: CustomDebugStringConvertible {
 
 // MARK: - Static Factory Methods
 
-extension BoardPosition {
+public extension BoardPosition {
     /// Creates a board position from algebraic notation (e.g., "A1", "H8")
     /// - Parameter notation: Algebraic notation string
     /// - Returns: BoardPosition if valid, nil otherwise
@@ -92,7 +96,7 @@ extension BoardPosition {
 
 // MARK: - Direction Helpers
 
-extension BoardPosition {
+public extension BoardPosition {
     /// All eight possible directions from this position
     public var adjacentDirections: [BoardPosition] {
         return [

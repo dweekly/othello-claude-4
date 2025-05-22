@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import SwiftUI
 import OthelloCore
 #if canImport(UIKit)
@@ -10,7 +14,7 @@ struct CellView: View {
     let isValidMove: Bool
     let isProcessing: Bool
     let onTap: () -> Void
-    
+
     var body: some View {
         Button(action: onTap) {
             ZStack {
@@ -24,7 +28,7 @@ struct CellView: View {
                             .stroke(Color.primary.opacity(0.2), lineWidth: 1)
 #endif
                     )
-                
+
                 if isValidMove && !isProcessing {
                     Circle()
 #if canImport(UIKit)
@@ -35,7 +39,7 @@ struct CellView: View {
                         .scaleEffect(0.3)
                         .opacity(0.6)
                 }
-                
+
                 switch cellState {
                 case .empty:
                     EmptyView()
@@ -64,7 +68,7 @@ struct CellView: View {
         .accessibilityHint(accessibilityHint)
         .accessibilityAddTraits(isValidMove ? .isButton : [])
     }
-    
+
     private var accessibilityLabel: String {
         let positionName = position.algebraicNotation
         switch cellState {
@@ -76,7 +80,7 @@ struct CellView: View {
             return "White piece at \(positionName)"
         }
     }
-    
+
     private var accessibilityHint: String {
         if isValidMove && !isProcessing {
             return "Tap to place your piece here"
@@ -94,14 +98,14 @@ struct CellView: View {
                 isValidMove: true,
                 isProcessing: false
             ) {}
-            
+
             CellView(
                 position: BoardPosition(row: 0, col: 1),
                 cellState: .black,
                 isValidMove: false,
                 isProcessing: false
             ) {}
-            
+
             CellView(
                 position: BoardPosition(row: 0, col: 2),
                 cellState: .white,

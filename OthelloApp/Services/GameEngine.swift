@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import Foundation
 
 /// Production implementation of the Othello game engine
@@ -211,10 +215,8 @@ public final class GameEngine: GameEngineProtocol {
         let playerPositions = board.positions(with: player.cellState)
         var stableCount = 0
 
-        for position in playerPositions {
-            if isStablePosition(position, for: player, in: board) {
-                stableCount += 1
-            }
+        for position in playerPositions where isStablePosition(position, for: player, in: board) {
+            stableCount += 1
         }
 
         return playerPositions.isEmpty ? 0.0 : Double(stableCount) / Double(playerPositions.count)
@@ -247,17 +249,15 @@ public final class GameEngine: GameEngineProtocol {
             (BoardPosition(row: 7, col: 7), [(-1, 0), (0, -1)]) // Bottom-right
         ]
 
-        for (corner, directions) in corners {
-            if board[corner] != .empty {
-                let cornerPlayer = board[corner]
+        for (corner, directions) in corners where board[corner] != .empty {
+            let cornerPlayer = board[corner]
 
-                for (rowDir, colDir) in directions {
-                    var current = corner
-                    while let next = current.offset(row: rowDir, col: colDir),
-                          board[next] == cornerPlayer {
-                        stableEdges.insert(next)
-                        current = next
-                    }
+            for (rowDir, colDir) in directions {
+                var current = corner
+                while let next = current.offset(row: rowDir, col: colDir),
+                      board[next] == cornerPlayer {
+                    stableEdges.insert(next)
+                    current = next
                 }
             }
         }
@@ -290,7 +290,7 @@ public final class GameEngine: GameEngineProtocol {
 
 // MARK: - GameEngine Extensions for Testing
 
-extension GameEngine {
+public extension GameEngine {
     /// Validates the internal consistency of a game state
     /// Used primarily for testing and debugging
     public func validateGameState(_ gameState: GameState) -> [String] {

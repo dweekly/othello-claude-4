@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import Foundation
 
 /// Represents the current score of an Othello game
@@ -67,25 +71,25 @@ public struct Score: Hashable, Codable {
     /// Formatted string for display
     public var displayString: String {
         return String(format: NSLocalizedString("score.display.format",
-                                              comment: "Score display format"),
-                     black, white)
+                                                comment: "Score display format"),
+                      black, white)
     }
 
     /// Accessibility description
     public var accessibilityDescription: String {
         if isTied {
             return String(format: NSLocalizedString("score.accessibility.tied",
-                                                  comment: "Score tied accessibility"),
-                         total)
+                                                    comment: "Score tied accessibility"),
+                            total)
         } else if let leader = leader {
             let leadAmount = abs(difference)
             return String(format: NSLocalizedString("score.accessibility.leading",
-                                                  comment: "Score leading accessibility"),
-                         leader.localizedName, leadAmount)
+                                                    comment: "Score leading accessibility"),
+                            leader.localizedName, leadAmount)
         } else {
             return String(format: NSLocalizedString("score.accessibility.basic",
-                                                  comment: "Basic score accessibility"),
-                         black, white)
+                                                    comment: "Basic score accessibility"),
+                            black, white)
         }
     }
 }
@@ -107,7 +111,7 @@ extension Score: CustomDebugStringConvertible {
 
 // MARK: - Static Factory Methods
 
-extension Score {
+public extension Score {
     /// Starting score for a new Othello game
     public static var initial: Score {
         return Score(black: 2, white: 2)

@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import Foundation
 
 /// Represents an 8x8 Othello board with immutable operations
@@ -19,10 +23,8 @@ public struct Board: Hashable, Codable {
     /// - Parameter position: The board position
     /// - Returns: The cell state at that position
     public subscript(position: BoardPosition) -> CellState {
-        get {
-            guard position.isValid else { return .empty }
-            return cells[position.row][position.col]
-        }
+        guard position.isValid else { return .empty }
+        return cells[position.row][position.col]
     }
 
     /// Access cell state using row and column indices
@@ -31,9 +33,7 @@ public struct Board: Hashable, Codable {
     ///   - col: Column index (0-7)
     /// - Returns: The cell state at that position
     public subscript(row: Int, col: Int) -> CellState {
-        get {
-            return self[BoardPosition(row: row, col: col)]
-        }
+        return self[BoardPosition(row: row, col: col)]
     }
 
     /// Creates a new board with a piece placed at the specified position
@@ -104,8 +104,8 @@ public struct Board: Hashable, Codable {
     ///   - colDirection: Column direction (-1, 0, 1)
     /// - Returns: Array of positions in that direction
     public func positions(from start: BoardPosition,
-                         rowDirection: Int,
-                         colDirection: Int) -> [BoardPosition] {
+                          rowDirection: Int,
+                          colDirection: Int) -> [BoardPosition] {
         var positions: [BoardPosition] = []
         var current = start
 
@@ -133,9 +133,7 @@ public struct Board: Hashable, Codable {
         let directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
         for (rowDir, colDir) in directions {
-            let positionsInDirection = positions(from: position,
-                                               rowDirection: rowDir,
-                                               colDirection: colDir)
+            let positionsInDirection = positions(from: position, rowDirection: rowDir, colDirection: colDir)
 
             var candidatesForCapture: [BoardPosition] = []
 
@@ -196,7 +194,7 @@ public struct Board: Hashable, Codable {
 
 // MARK: - Static Factory Methods
 
-extension Board {
+public extension Board {
     /// Standard starting position for Othello
     public static var initial: Board {
         var board = Board()

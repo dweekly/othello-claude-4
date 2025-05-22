@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import SwiftUI
 import OthelloCore
 #if canImport(UIKit)
@@ -6,7 +10,7 @@ import UIKit
 
 struct GameStatusView: View {
     let viewModel: GameViewModel
-    
+
     var body: some View {
         VStack(spacing: 12) {
             HStack {
@@ -16,9 +20,9 @@ struct GameStatusView: View {
                     isCurrentPlayer: viewModel.gameState.currentPlayer == .black,
                     isGameFinished: viewModel.gameState.gamePhase == .finished
                 )
-                
+
                 Spacer()
-                
+
                 PlayerIndicatorView(
                     player: .white,
                     score: viewModel.gameState.score.white,
@@ -26,7 +30,7 @@ struct GameStatusView: View {
                     isGameFinished: viewModel.gameState.gamePhase == .finished
                 )
             }
-            
+
             Text(viewModel.gameStatusMessage)
                 .font(.headline)
                 .foregroundColor(.primary)

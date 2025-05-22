@@ -1,3 +1,7 @@
+//
+//  Othello iOS App
+//  Copyright © 2025 Primatech Paper Co. LLC.
+//
 import Foundation
 
 /// Represents the complete state of an Othello game
@@ -212,8 +216,8 @@ public struct GameState: Hashable, Codable {
 
 /// Represents the current phase of the game
 public enum GamePhase: String, CaseIterable, Codable {
-    case playing = "playing"
-    case finished = "finished"
+    case playing
+    case finished
 
     /// Localized description
     public var localizedDescription: String {
@@ -277,7 +281,7 @@ public struct GameResult: Codable, Hashable {
 
 // MARK: - Static Factory Methods
 
-extension GameState {
+public extension GameState {
     /// Standard starting game state for human vs human
     public static func newHumanVsHuman() -> GameState {
         return GameState(

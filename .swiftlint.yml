@@ -1,0 +1,182 @@
+# SwiftLint Configuration for Othello iOS
+# Following best practices from AGENTS.md
+
+# Enabled rules
+opt_in_rules:
+  - array_init
+  - attributes
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - discouraged_object_literal
+  - empty_collection_literal
+  - empty_count
+  - empty_string
+  - enum_case_associated_values_count
+  - explicit_init
+  - extension_access_modifier
+  - fallthrough
+  - fatal_error_message
+  - file_header
+  - first_where
+  - flatmap_over_map_reduce
+  - identical_operands
+  - joined_default_parameter
+  - last_where
+  - legacy_random
+  - literal_expression_end_indentation
+  - lower_acl_than_parent
+  - modifier_order
+  - nimble_operator
+  - nslocalizedstring_key
+  - number_separator
+  - object_literal
+  - operator_usage_whitespace
+  - overridden_super_call
+  - override_in_extension
+  - pattern_matching_keywords
+  - prefer_self_type_over_type_of_self
+  - private_action
+  - private_outlet
+  - prohibited_super_call
+  - quick_discouraged_call
+  - quick_discouraged_focused_test
+  - quick_discouraged_pending_test
+  - reduce_into
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - single_test_class
+  - sorted_first_last
+  - static_operator
+  - strong_iboutlet
+  - toggle_bool
+  - trailing_closure
+  - unneeded_parentheses_in_closure_argument
+  - unused_import
+  - unused_private_declaration
+  - vertical_parameter_alignment_on_call
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+  - yoda_condition
+
+# Disabled rules
+disabled_rules:
+  - todo # We'll allow TODO comments during development
+  - line_length # We'll handle this with custom configuration
+
+# Custom rule configurations
+line_length:
+  warning: 120
+  error: 150
+  ignores_function_declarations: true
+  ignores_comments: true
+  ignores_urls: true
+
+function_body_length:
+  warning: 50
+  error: 100
+
+function_parameter_count:
+  warning: 6
+  error: 8
+
+type_body_length:
+  warning: 300
+  error: 500
+
+file_length:
+  warning: 500
+  error: 1000
+
+cyclomatic_complexity:
+  warning: 10
+  error: 15
+
+nesting:
+  type_level:
+    warning: 2
+    error: 3
+  statement_level:
+    warning: 5
+    error: 10
+
+# File header requirement
+file_header:
+  required_pattern: |
+                    \/\/
+                    \/\/ .*\.swift
+                    \/\/ Othello iOS
+                    \/\/
+                    \/\/ Created.*
+                    \/\/
+
+# Identifier naming
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 40
+    error: 50
+  excluded:
+    - id
+    - x
+    - y
+    - i
+    - j
+
+type_name:
+  min_length:
+    warning: 3
+    error: 2
+  max_length:
+    warning: 40
+    error: 50
+
+# Paths
+included:
+  - OthelloApp
+
+excluded:
+  - OthelloApp/Tests
+  - .build
+  - .swiftpm
+  - DerivedData
+
+# Custom rules for our project
+custom_rules:
+  # Ensure all models conform to protocols consistently
+  model_protocol_conformance:
+    name: "Model Protocol Conformance"
+    regex: "struct .+: .*(Hashable|Codable).*\\{"
+    message: "Models should consistently implement Hashable and Codable"
+    severity: warning
+
+  # Discourage force unwrapping except in tests
+  no_force_unwrapping:
+    name: "Avoid Force Unwrapping"
+    regex: "\\!(?!\\s*//)"
+    message: "Avoid force unwrapping. Use guard let, if let, or nil coalescing instead"
+    severity: warning
+
+  # Encourage proper error handling
+  proper_error_handling:
+    name: "Proper Error Handling"
+    regex: "try\\!"
+    message: "Use proper error handling instead of try!"
+    severity: error
+
+  # Accessibility reminder
+  accessibility_required:
+    name: "Accessibility Labels Required"
+    regex: "\\.(button|image|text)\\("
+    message: "Don't forget to add accessibility labels to UI elements"
+    severity: warning
+
+# Analyzer rules
+analyzer_rules:
+  - explicit_self
+  - unused_import

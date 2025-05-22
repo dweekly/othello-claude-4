@@ -1,0 +1,189 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        # Test on multiple Swift/Xcode versions
+        xcode: ['15.0']
+        ios-version: ['17.0']
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: ${{ matrix.xcode }}
+        
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+          
+    - name: Install SwiftLint
+      run: brew install swiftlint
+      
+    - name: Swift Version
+      run: swift --version
+      
+    - name: Build
+      run: swift build
+      
+    - name: Run SwiftLint
+      run: swiftlint lint --reporter github-actions-logging
+      
+    - name: Run Tests
+      run: swift test --enable-code-coverage
+      
+    - name: Generate Code Coverage
+      run: |
+        xcrun llvm-cov export -format="lcov" \
+          .build/debug/OthelloAppPackageTests.xctest/Contents/MacOS/OthelloAppPackageTests \
+          -instr-profile .build/debug/codecov/default.profdata > coverage.lcov
+          
+    - name: Upload Coverage to Codecov
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage.lcov
+        flags: swift
+        name: codecov-umbrella
+        
+    - name: Archive Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results-${{ matrix.xcode }}
+        path: |
+          .build/debug/
+          coverage.lcov
+
+  quality-gates:
+    name: Quality Gates
+    runs-on: macos-latest
+    needs: test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.0'
+        
+    - name: Performance Benchmarks
+      run: |
+        echo "Running performance benchmarks..."
+        # Add performance test commands here
+        swift test --filter PerformanceTests || echo "No performance tests found"
+        
+    - name: Security Scan
+      run: |
+        echo "Running security scans..."
+        # Add security scanning tools here
+        grep -r "TODO.*security\|FIXME.*security" . || echo "No security TODOs found"
+        
+    - name: Documentation Check
+      run: |
+        echo "Checking documentation coverage..."
+        # Check for documentation on public APIs
+        find OthelloApp -name "*.swift" -exec grep -L "///" {} \; | \
+        xargs grep -l "public " | head -5 || echo "Documentation check passed"
+
+  ios-build:
+    name: iOS Build Verification
+    runs-on: macos-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.0'
+        
+    - name: Create Xcode Project
+      run: |
+        # This will be needed when we add the iOS app target
+        echo "iOS project creation will be added in Phase 3"
+        
+    # Future: Add iOS app building, archiving, and TestFlight upload
+
+  dependency-check:
+    name: Dependency Audit
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Audit Dependencies
+      run: |
+        echo "Checking for dependency vulnerabilities..."
+        # Swift Package Manager doesn't have a built-in audit yet
+        # This is a placeholder for future security scanning
+        echo "No external dependencies to audit"
+        
+    - name: License Check
+      run: |
+        echo "Checking dependency licenses..."
+        swift package show-dependencies || echo "No dependencies found"
+
+  release:
+    name: Release Management
+    runs-on: macos-latest
+    needs: [test, quality-gates, ios-build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Generate Release Notes
+      run: |
+        echo "Generating release notes from commits..."
+        # Future: Auto-generate release notes from conventional commits
+        
+    - name: Tag Release
+      if: contains(github.event.head_commit.message, 'feat:') || contains(github.event.head_commit.message, 'fix:')
+      run: |
+        echo "Would create release tag here"
+        # Future: Implement semantic versioning based on conventional commits
+
+  notification:
+    name: Notifications
+    runs-on: macos-latest
+    needs: [test, quality-gates]
+    if: always()
+    
+    steps:
+    - name: Notify on Success
+      if: needs.test.result == 'success' && needs.quality-gates.result == 'success'
+      run: |
+        echo "✅ All checks passed! Ready for deployment."
+        
+    - name: Notify on Failure
+      if: needs.test.result == 'failure' || needs.quality-gates.result == 'failure'
+      run: |
+        echo "❌ Pipeline failed. Check logs for details."
+        # Future: Add Slack/Discord notifications

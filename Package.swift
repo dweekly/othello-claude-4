@@ -9,19 +9,35 @@ let package = Package(
     ],
     products: [
         .library(
+            name: "OthelloCore",
+            targets: ["OthelloCore"]
+        ),
+        .executable(
             name: "OthelloApp",
             targets: ["OthelloApp"]
         ),
     ],
     targets: [
         .target(
-            name: "OthelloApp",
+            name: "OthelloCore",
             path: "OthelloApp",
-            exclude: ["Tests", "Documentation"]
+            exclude: ["Tests", "Documentation", "App", "Views", "ViewModels"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
+        ),
+        .executableTarget(
+            name: "OthelloApp",
+            dependencies: ["OthelloCore"],
+            path: "OthelloApp",
+            sources: ["App", "Views", "ViewModels"],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
         .testTarget(
             name: "OthelloAppTests",
-            dependencies: ["OthelloApp"],
+            dependencies: ["OthelloCore"],
             path: "OthelloApp/Tests"
         ),
     ]

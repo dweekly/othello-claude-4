@@ -1,5 +1,5 @@
 import Foundation
-@testable import OthelloApp
+@testable import OthelloCore
 
 /// Utilities for creating test data and scenarios
 public struct TestUtilities {

@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-@testable import OthelloApp
+@testable import OthelloCore
 
 @Suite("GameState Tests")
 struct GameStateTests {

@@ -111,7 +111,7 @@ struct GameViewModelTests {
             #expect(viewModel.gameState.score.black + viewModel.gameState.score.white > 4)
             
             // Reset the game
-            viewModel.resetGame()
+            viewModel.confirmNewGame()
             
             // Verify we're back to initial state
             #expect(viewModel.gameState.currentPlayer == .black)
@@ -155,7 +155,7 @@ struct GameViewModelTests {
             mockEngine.simulateFinishedGame(winner: .black)
             
             // Reset to trigger the finished state
-            viewModel.resetGame()
+            viewModel.confirmNewGame()
             
             // Verify finished game status
             if viewModel.gameState.gamePhase == .finished {

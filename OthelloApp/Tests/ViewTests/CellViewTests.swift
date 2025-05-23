@@ -21,7 +21,8 @@ struct CellViewTests {
             position: blackPosition,
             cellState: .black,
             isValidMove: false,
-            isProcessing: false
+            isProcessing: false,
+            isInvalidMove: false
         ) {}
         
         // Test white piece accessibility  
@@ -29,7 +30,8 @@ struct CellViewTests {
             position: whitePosition,
             cellState: .white,
             isValidMove: false,
-            isProcessing: false
+            isProcessing: false,
+            isInvalidMove: false
         ) {}
         
         // Test empty cell with valid move
@@ -37,7 +39,8 @@ struct CellViewTests {
             position: emptyPosition,
             cellState: .empty,
             isValidMove: true,
-            isProcessing: false
+            isProcessing: false,
+            isInvalidMove: false
         ) {}
         
         // Test empty cell without valid move
@@ -45,7 +48,8 @@ struct CellViewTests {
             position: emptyPosition,
             cellState: .empty,
             isValidMove: false,
-            isProcessing: false
+            isProcessing: false,
+            isInvalidMove: false
         ) {}
         
         // We can't directly test the accessibility labels in unit tests without UI testing framework,
@@ -66,6 +70,7 @@ struct CellViewTests {
             cellState: .empty,
             isValidMove: false,
             isProcessing: false,
+            isInvalidMove: false,
             onTap: tapAction
         )
         
@@ -75,6 +80,7 @@ struct CellViewTests {
             cellState: .black,
             isValidMove: false,
             isProcessing: false,
+            isInvalidMove: false,
             onTap: tapAction
         )
         
@@ -84,6 +90,7 @@ struct CellViewTests {
             cellState: .white,
             isValidMove: false,
             isProcessing: false,
+            isInvalidMove: false,
             onTap: tapAction
         )
         
@@ -104,6 +111,7 @@ struct CellViewTests {
             cellState: .empty,
             isValidMove: true,
             isProcessing: false,
+            isInvalidMove: false,
             onTap: tapAction
         )
         
@@ -113,6 +121,7 @@ struct CellViewTests {
             cellState: .empty,
             isValidMove: false,
             isProcessing: false,
+            isInvalidMove: false,
             onTap: tapAction
         )
         
@@ -122,6 +131,7 @@ struct CellViewTests {
             cellState: .empty,
             isValidMove: true,
             isProcessing: true,
+            isInvalidMove: false,
             onTap: tapAction
         )
         
@@ -144,7 +154,8 @@ struct CellViewTests {
             position: position,
             cellState: .empty,
             isValidMove: true,
-            isProcessing: false
+            isProcessing: false,
+            isInvalidMove: false
         ) {
             tapCalled = true
         }
@@ -171,7 +182,8 @@ struct CellViewTests {
                 position: position,
                 cellState: .empty,
                 isValidMove: false,
-                isProcessing: false
+                isProcessing: false,
+                isInvalidMove: false
             ) {}
             
             #expect(cell.position == position)
@@ -209,7 +221,8 @@ struct CellViewTests {
                 position: position,
                 cellState: .empty,
                 isValidMove: false,
-                isProcessing: false
+                isProcessing: false,
+                isInvalidMove: false
             ) {}
             
             #expect(cell.position.algebraicNotation == testCase.expected)
@@ -232,7 +245,8 @@ struct CellViewTests {
                         position: position,
                         cellState: cellState,
                         isValidMove: isValidMove,
-                        isProcessing: isProcessing
+                        isProcessing: isProcessing,
+                        isInvalidMove: false
                     ) {}
                     
                     // Verify cell maintains its properties
@@ -254,7 +268,8 @@ struct CellViewTests {
             position: position,
             cellState: .black,
             isValidMove: false,
-            isProcessing: false
+            isProcessing: false,
+            isInvalidMove: false
         ) {}
         
         // Verify position properties are accessible
@@ -276,7 +291,8 @@ struct CellViewTests {
                 position: corner,
                 cellState: .empty,
                 isValidMove: false,
-                isProcessing: false
+                isProcessing: false,
+                isInvalidMove: false
             ) {}
             
             #expect(cornerCell.position.isValid)

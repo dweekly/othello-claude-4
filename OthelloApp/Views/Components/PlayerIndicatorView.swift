@@ -31,11 +31,13 @@ struct PlayerIndicatorView: View {
 
                 Text(playerName)
                     .font(.subheadline)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     .fontWeight(isCurrentPlayer && !isGameFinished ? .bold : .regular)
             }
 
             Text("\(score)")
                 .font(.title2)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                 .fontWeight(.semibold)
                 .foregroundColor(isCurrentPlayer && !isGameFinished ? .accentColor : .primary)
         }

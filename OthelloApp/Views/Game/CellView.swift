@@ -13,21 +13,23 @@ struct CellView: View {
     let cellState: CellState
     let isValidMove: Bool
     let isProcessing: Bool
+    let isInvalidMove: Bool
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
             ZStack {
                 Rectangle()
-                    .fill(Color(.systemGreen))
+                    .fill(isInvalidMove ? Color.red.opacity(0.3) : Color(.systemGreen))
                     .overlay(
                         Rectangle()
 #if canImport(UIKit)
-                            .stroke(Color(UIColor.systemBackground), lineWidth: 1)
+                            .stroke(isInvalidMove ? Color.red : Color(UIColor.systemBackground), lineWidth: isInvalidMove ? 2 : 1)
 #else
-                            .stroke(Color.primary.opacity(0.2), lineWidth: 1)
+                            .stroke(isInvalidMove ? Color.red : Color.primary.opacity(0.2), lineWidth: isInvalidMove ? 2 : 1)
 #endif
                     )
+                    .animation(.easeInOut(duration: 0.3), value: isInvalidMove)
 
                 if isValidMove && !isProcessing {
                     Circle()
@@ -47,6 +49,7 @@ struct CellView: View {
                     Circle()
                         .fill(Color.black)
                         .scaleEffect(0.8)
+                        .transition(.scale.combined(with: .opacity))
                 case .white:
                     Circle()
                         .fill(Color.white)
@@ -59,11 +62,13 @@ struct CellView: View {
 #endif
                         )
                         .scaleEffect(0.8)
+                        .transition(.scale.combined(with: .opacity))
                 }
             }
         }
         .aspectRatio(1.0, contentMode: .fit)
-        .disabled(isProcessing || !isValidMove)
+        .disabled(isProcessing)
+        .animation(.easeInOut(duration: 0.3), value: cellState)
         .accessibilityLabel(accessibilityLabel)
         .accessibilityHint(accessibilityHint)
         .accessibilityAddTraits(isValidMove ? .isButton : [])
@@ -82,7 +87,9 @@ struct CellView: View {
     }
 
     private var accessibilityHint: String {
-        if isValidMove && !isProcessing {
+        if isInvalidMove {
+            return "Invalid move - this position is not available"
+        } else if isValidMove && !isProcessing {
             return "Tap to place your piece here"
         }
         return ""
@@ -96,21 +103,24 @@ struct CellView: View {
                 position: BoardPosition(row: 0, col: 0),
                 cellState: .empty,
                 isValidMove: true,
-                isProcessing: false
+                isProcessing: false,
+                isInvalidMove: false
             ) {}
 
             CellView(
                 position: BoardPosition(row: 0, col: 1),
                 cellState: .black,
                 isValidMove: false,
-                isProcessing: false
+                isProcessing: false,
+                isInvalidMove: false
             ) {}
 
             CellView(
                 position: BoardPosition(row: 0, col: 2),
                 cellState: .white,
                 isValidMove: false,
-                isProcessing: false
+                isProcessing: false,
+                isInvalidMove: false
             ) {}
         }
     }

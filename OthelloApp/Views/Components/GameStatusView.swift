@@ -33,8 +33,10 @@ struct GameStatusView: View {
 
             Text(viewModel.gameStatusMessage)
                 .font(.headline)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                 .foregroundColor(.primary)
                 .accessibilityAddTraits(.isStaticText)
+                .accessibilityLabel(accessibilityGameStatus)
         }
         .padding()
         .background(
@@ -45,6 +47,16 @@ struct GameStatusView: View {
                 .fill(Color.secondary.opacity(0.1))
 #endif
         )
+    }
+
+    private var accessibilityGameStatus: String {
+        switch viewModel.gameState.gamePhase {
+        case .playing:
+            let validMovesCount = viewModel.validMoves.count
+            return "\(viewModel.gameStatusMessage). \(validMovesCount) valid moves available."
+        case .finished:
+            return "\(viewModel.gameStatusMessage)"
+        }
     }
 }
 

@@ -21,7 +21,8 @@ struct BoardView: View {
                     position: position,
                     cellState: viewModel.gameState.board[position],
                     isValidMove: viewModel.validMoves.contains(position),
-                    isProcessing: viewModel.isProcessingMove
+                    isProcessing: viewModel.isProcessingMove,
+                    isInvalidMove: viewModel.lastInvalidMovePosition == position
                 ) {
                     viewModel.makeMove(at: position)
                 }

@@ -116,7 +116,7 @@ struct GameFlowIntegrationTests {
             }
             
             // Reset the game
-            viewModel.resetGame()
+            viewModel.confirmNewGame()
             
             // Verify we're back to a valid initial state
             #expect(viewModel.gameState.currentPlayer == .black)
@@ -200,7 +200,7 @@ struct GameFlowIntegrationTests {
             
             // Test reset multiple times
             for _ in 0..<3 {
-                viewModel.resetGame()
+                viewModel.confirmNewGame()
                 #expect(viewModel.gameState.currentPlayer == .black)
                 #expect(!viewModel.isProcessingMove)
             }

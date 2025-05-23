@@ -14,6 +14,10 @@ class GameViewModel {
     private(set) var gameState: GameState
     private(set) var validMoves: Set<BoardPosition> = []
     private(set) var isProcessingMove = false
+    private(set) var lastInvalidMovePosition: BoardPosition?
+    var showingInvalidMoveAlert = false
+    var showingGameCompletionAlert = false
+    var showingNewGameConfirmation = false
 
     init(gameEngine: GameEngineProtocol = GameEngine()) {
         self.gameEngine = gameEngine
@@ -25,8 +29,29 @@ class GameViewModel {
     }
 
     func makeMove(at position: BoardPosition) {
-        guard !isProcessingMove,
-              validMoves.contains(position) else { return }
+        guard !isProcessingMove else { return }
+
+        // Clear any previous invalid move indicators
+        lastInvalidMovePosition = nil
+
+        guard validMoves.contains(position) else {
+            // Handle invalid move
+            lastInvalidMovePosition = position
+            showingInvalidMoveAlert = true
+
+            // Provide haptic feedback for invalid move
+            #if canImport(UIKit)
+            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+            impactFeedback.impactOccurred()
+            #endif
+
+            // Clear the invalid move indicator after a delay
+            Task {
+                try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+                lastInvalidMovePosition = nil
+            }
+            return
+        }
 
         isProcessingMove = true
 
@@ -34,18 +59,53 @@ class GameViewModel {
         if let newState = gameState.applyingMove(move) {
             gameState = newState
             updateValidMoves()
+
+            // Provide haptic feedback for valid move
+            #if canImport(UIKit)
+            let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+            impactFeedback.impactOccurred()
+            #endif
+
+            // Check if game just finished
+            if gameState.gamePhase == .finished {
+                showingGameCompletionAlert = true
+            }
         }
 
         isProcessingMove = false
     }
 
-    func resetGame() {
+    func requestNewGame() {
+        if gameState.gamePhase == .playing {
+            showingNewGameConfirmation = true
+        } else {
+            confirmNewGame()
+        }
+    }
+
+    func confirmNewGame() {
         gameState = gameEngine.newGame(
             blackPlayer: PlayerInfo(player: .black, type: .human),
             whitePlayer: PlayerInfo(player: .white, type: .human)
         )
         updateValidMoves()
         isProcessingMove = false
+        lastInvalidMovePosition = nil
+        showingInvalidMoveAlert = false
+        showingGameCompletionAlert = false
+        showingNewGameConfirmation = false
+    }
+
+    func dismissInvalidMoveAlert() {
+        showingInvalidMoveAlert = false
+    }
+
+    func dismissGameCompletionAlert() {
+        showingGameCompletionAlert = false
+    }
+
+    func dismissNewGameConfirmation() {
+        showingNewGameConfirmation = false
     }
 
     private func updateValidMoves() {
@@ -70,6 +130,21 @@ class GameViewModel {
             case .white: return "White wins!"
             case .none: return "It's a tie!"
             }
+        }
+    }
+
+    var gameCompletionMessage: String {
+        let winner = gameEngine.winner(of: gameState)
+        let blackScore = gameState.score.black
+        let whiteScore = gameState.score.white
+
+        switch winner {
+        case .black:
+            return "Black wins with \(blackScore) pieces!\nWhite had \(whiteScore) pieces."
+        case .white:
+            return "White wins with \(whiteScore) pieces!\nBlack had \(blackScore) pieces."
+        case .none:
+            return "It's a tie! Both players have \(blackScore) pieces."
         }
     }
 }

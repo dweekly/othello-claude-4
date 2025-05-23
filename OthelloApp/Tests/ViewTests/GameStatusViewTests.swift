@@ -154,7 +154,7 @@ struct GameStatusViewTests {
             }
             
             // Reset the game
-            viewModel.resetGame()
+            viewModel.confirmNewGame()
             
             // Verify status view reflects reset state
             #expect(statusView.viewModel.gameState.currentPlayer == .black)

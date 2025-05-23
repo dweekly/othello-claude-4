@@ -5,12 +5,12 @@
 import Foundation
 
 /// Represents a player in the Othello game
-public enum Player: String, CaseIterable, Codable {
+enum Player: String, CaseIterable, Codable {
     case black
     case white
 
     /// The opposite player
-    public var opposite: Player {
+    var opposite: Player {
         switch self {
         case .black: return .white
         case .white: return .black
@@ -18,7 +18,7 @@ public enum Player: String, CaseIterable, Codable {
     }
 
     /// The cell state corresponding to this player's pieces
-    public var cellState: CellState {
+    var cellState: CellState {
         switch self {
         case .black: return .black
         case .white: return .white
@@ -26,7 +26,7 @@ public enum Player: String, CaseIterable, Codable {
     }
 
     /// Human-readable name
-    public var name: String {
+    var name: String {
         switch self {
         case .black: return "Black"
         case .white: return "White"
@@ -34,7 +34,7 @@ public enum Player: String, CaseIterable, Codable {
     }
 
     /// Localized name for UI display
-    public var localizedName: String {
+    var localizedName: String {
         switch self {
         case .black:
             return NSLocalizedString("player.black", comment: "Black player")
@@ -44,7 +44,7 @@ public enum Player: String, CaseIterable, Codable {
     }
 
     /// Accessibility description for screen readers
-    public var accessibilityDescription: String {
+    var accessibilityDescription: String {
         switch self {
         case .black:
             return NSLocalizedString("accessibility.player.black", comment: "Black player accessibility")
@@ -57,12 +57,12 @@ public enum Player: String, CaseIterable, Codable {
 // MARK: - Player Type Extensions
 
 /// Represents the type of player (human or AI)
-public enum PlayerType: String, CaseIterable, Codable {
+enum PlayerType: String, CaseIterable, Codable {
     case human
     case ai
 
     /// Localized name for UI display
-    public var localizedName: String {
+    var localizedName: String {
         switch self {
         case .human:
             return NSLocalizedString("player.type.human", comment: "Human player")
@@ -73,29 +73,29 @@ public enum PlayerType: String, CaseIterable, Codable {
 }
 
 /// Complete player information including type and difficulty (for AI)
-public struct PlayerInfo: Codable, Hashable {
-    public let player: Player
-    public let type: PlayerType
-    public let aiDifficulty: AIDifficulty?
+struct PlayerInfo: Codable, Hashable {
+    let player: Player
+    let type: PlayerType
+    let aiDifficulty: AIDifficulty?
 
-    public init(player: Player, type: PlayerType, aiDifficulty: AIDifficulty? = nil) {
+    init(player: Player, type: PlayerType, aiDifficulty: AIDifficulty? = nil) {
         self.player = player
         self.type = type
         self.aiDifficulty = type == .ai ? aiDifficulty : nil
     }
 
     /// Whether this is a human player
-    public var isHuman: Bool {
+    var isHuman: Bool {
         return type == .human
     }
 
     /// Whether this is an AI player
-    public var isAI: Bool {
+    var isAI: Bool {
         return type == .ai
     }
 
     /// Display name including type and difficulty
-    public var displayName: String {
+    var displayName: String {
         switch type {
         case .human:
             return player.localizedName
@@ -107,13 +107,13 @@ public struct PlayerInfo: Codable, Hashable {
 }
 
 /// AI difficulty levels
-public enum AIDifficulty: String, CaseIterable, Codable {
+enum AIDifficulty: String, CaseIterable, Codable {
     case easy
     case medium
     case hard
 
     /// Localized name for UI display
-    public var localizedName: String {
+    var localizedName: String {
         switch self {
         case .easy:
             return NSLocalizedString("ai.difficulty.easy", comment: "Easy AI difficulty")
@@ -125,7 +125,7 @@ public enum AIDifficulty: String, CaseIterable, Codable {
     }
 
     /// Detailed description of the AI behavior
-    public var description: String {
+    var description: String {
         switch self {
         case .easy:
             return NSLocalizedString("ai.difficulty.easy.description",
@@ -140,16 +140,16 @@ public enum AIDifficulty: String, CaseIterable, Codable {
     }
 
     /// Search depth for minimax algorithm
-    public var searchDepth: Int {
+    var searchDepth: Int {
         switch self {
         case .easy: return 1
         case .medium: return 3
-        case .hard: return 4  // Reduced from 6 to prevent deep recursion
+        case .hard: return 6
         }
     }
 
     /// Thinking time range in seconds
-    public var thinkingTimeRange: ClosedRange<Double> {
+    var thinkingTimeRange: ClosedRange<Double> {
         switch self {
         case .easy: return 0.5...1.5
         case .medium: return 1.0...3.0

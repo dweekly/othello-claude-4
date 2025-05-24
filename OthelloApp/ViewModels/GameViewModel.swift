@@ -37,9 +37,12 @@ class GameViewModel {
 
         isProcessingMove = true
 
+        print("DEBUG: Making move at \(position) for player \(gameState.currentPlayer)")
         let move = Move(position: position, player: gameState.currentPlayer)
         if let newState = gameState.applyingMove(move) {
+            print("DEBUG: Move applied, transitioning from \(gameState.currentPlayer) to next player")
             let nextState = gameEngine.nextTurn(from: newState)
+            print("DEBUG: After nextTurn, current player is now: \(nextState.currentPlayer)")
             gameState = nextState
             updateValidMoves()
 
@@ -54,6 +57,7 @@ class GameViewModel {
                 showingGameCompletionAlert = true
             } else {
                 // Check if it's now an AI player's turn
+                print("DEBUG: About to call processNextPlayerTurn()")
                 processNextPlayerTurn()
             }
         }
@@ -63,15 +67,23 @@ class GameViewModel {
     
     private func processNextPlayerTurn() {
         // Prevent recursion and ensure we're still playing
-        guard gameState.gamePhase == .playing && !isAIThinking else { return }
+        guard gameState.gamePhase == .playing && !isAIThinking else { 
+            print("DEBUG: processNextPlayerTurn guard failed - gamePhase: \(gameState.gamePhase), isAIThinking: \(isAIThinking)")
+            return 
+        }
         
         let currentPlayerInfo = gameState.currentPlayer == .black ? 
             gameState.blackPlayerInfo : gameState.whitePlayerInfo
         
+        print("DEBUG: processNextPlayerTurn - Current player: \(gameState.currentPlayer), isAI: \(currentPlayerInfo.isAI), type: \(currentPlayerInfo.type)")
+        
         if currentPlayerInfo.isAI {
+            print("DEBUG: Current player is AI, starting AI move task")
             Task {
                 await makeAIMove()
             }
+        } else {
+            print("DEBUG: Current player is human, not triggering AI")
         }
     }
     

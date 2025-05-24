@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         # Test on multiple Xcode versions
-        xcode: ['15.0']
+        xcode: ['16.3']
     
     steps:
     - name: Checkout code

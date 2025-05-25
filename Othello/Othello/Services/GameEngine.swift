@@ -4,6 +4,15 @@
 //
 import Foundation
 
+/// Metrics for evaluating a position
+private struct PositionMetrics {
+    let mobility: Int
+    let corners: Int
+    let edges: Int
+    let stability: Double
+    let score: Int
+}
+
 /// Production implementation of the Othello game engine
 ///
 /// This class implements all the game rules and logic for Othello,
@@ -164,23 +173,23 @@ final class GameEngine: GameEngineProtocol {
         let whiteStability = calculateStability(for: .white, in: board)
 
         // Overall evaluation
-        let blackEval = calculateOverallEvaluation(
-            player: .black,
+        let blackMetrics = PositionMetrics(
             mobility: blackMobility,
             corners: blackCorners,
             edges: blackEdges,
             stability: blackStability,
             score: gameState.score.black
         )
+        let blackEval = calculateOverallEvaluation(player: .black, metrics: blackMetrics)
 
-        let whiteEval = calculateOverallEvaluation(
-            player: .white,
+        let whiteMetrics = PositionMetrics(
             mobility: whiteMobility,
             corners: whiteCorners,
             edges: whiteEdges,
             stability: whiteStability,
             score: gameState.score.white
         )
+        let whiteEval = calculateOverallEvaluation(player: .white, metrics: whiteMetrics)
 
         return PositionAnalysis(
             mobility: [.black: blackMobility, .white: whiteMobility],
@@ -267,11 +276,7 @@ final class GameEngine: GameEngineProtocol {
 
     private func calculateOverallEvaluation(
         player: Player,
-        mobility: Int,
-        corners: Int,
-        edges: Int,
-        stability: Double,
-        score: Int
+        metrics: PositionMetrics
     ) -> Double {
         // Weighted evaluation based on different factors
         let mobilityWeight = 10.0
@@ -280,11 +285,11 @@ final class GameEngine: GameEngineProtocol {
         let stabilityWeight = 20.0
         let scoreWeight = 1.0
 
-        return Double(mobility) * mobilityWeight +
-               Double(corners) * cornerWeight +
-               Double(edges) * edgeWeight +
-               stability * stabilityWeight +
-               Double(score) * scoreWeight
+        return Double(metrics.mobility) * mobilityWeight +
+               Double(metrics.corners) * cornerWeight +
+               Double(metrics.edges) * edgeWeight +
+               metrics.stability * stabilityWeight +
+               Double(metrics.score) * scoreWeight
     }
 }
 

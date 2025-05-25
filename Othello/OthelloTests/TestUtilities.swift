@@ -7,9 +7,9 @@ import Foundation
 
 /// Utilities for creating test data and scenarios
 public struct TestUtilities {
-    
+
     // MARK: - Board Creation Utilities
-    
+
     /// Creates a board from ASCII art representation
     /// - Parameter boardString: String representation where:
     ///   - '.' = empty
@@ -21,22 +21,22 @@ public struct TestUtilities {
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .components(separatedBy: .newlines)
             .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
-        
+
         guard lines.count == 8 else {
             fatalError("Board string must have exactly 8 lines")
         }
-        
+
         var placements: [BoardPosition: CellState] = [:]
-        
+
         for (row, line) in lines.enumerated() {
             let chars = Array(line.replacingOccurrences(of: " ", with: ""))
             guard chars.count == 8 else {
                 fatalError("Each line must have exactly 8 characters (excluding spaces)")
             }
-            
+
             for (col, char) in chars.enumerated() {
                 let position = BoardPosition(row: row, col: col)
-                
+
                 switch char {
                 case ".", "_", "-":
                     placements[position] = .empty
@@ -49,10 +49,10 @@ public struct TestUtilities {
                 }
             }
         }
-        
+
         return Board().placing(placements)
     }
-    
+
     /// Creates a board with random piece placement
     /// - Parameters:
     ///   - blackPieces: Number of black pieces to place
@@ -62,24 +62,24 @@ public struct TestUtilities {
     public static func createRandomBoard(blackPieces: Int, whitePieces: Int, seed: UInt64 = 42) -> Board {
         var generator = SeededRandomNumberGenerator(seed: seed)
         let totalPieces = blackPieces + whitePieces
-        
+
         guard totalPieces <= 64 else {
             fatalError("Total pieces cannot exceed 64")
         }
-        
+
         let allPositions = BoardPosition.allPositions.shuffled(using: &generator)
         var placements: [BoardPosition: CellState] = [:]
-        
-        for i in 0..<totalPieces {
-            let position = allPositions[i]
-            placements[position] = i < blackPieces ? .black : .white
+
+        for index in 0..<totalPieces {
+            let position = allPositions[index]
+            placements[position] = index < blackPieces ? .black : .white
         }
-        
+
         return Board().placing(placements)
     }
-    
+
     // MARK: - Game State Creation Utilities
-    
+
     /// Creates a game state from a board configuration
     /// - Parameters:
     ///   - board: The board configuration
@@ -103,7 +103,7 @@ public struct TestUtilities {
             whitePlayerInfo: PlayerInfo(player: .white, type: whitePlayerType)
         )
     }
-    
+
     /// Creates a near-endgame scenario for testing
     /// - Returns: GameState near the end of the game
     public static func createNearEndgameState() -> GameState {
@@ -117,11 +117,11 @@ public struct TestUtilities {
         BBBBB...
         BBBBB...
         """
-        
+
         let board = createBoard(from: boardString)
         return createGameState(board: board, currentPlayer: .white)
     }
-    
+
     /// Creates a corner control scenario
     /// - Returns: GameState where corner control is important
     public static func createCornerControlState() -> GameState {
@@ -135,11 +135,11 @@ public struct TestUtilities {
         WWWWWWB.
         WWWWWWWB
         """
-        
+
         let board = createBoard(from: boardString)
         return createGameState(board: board, currentPlayer: .white)
     }
-    
+
     /// Creates a mobility test scenario
     /// - Returns: GameState where mobility is critical
     public static func createMobilityTestState() -> GameState {
@@ -153,13 +153,13 @@ public struct TestUtilities {
         ........
         ........
         """
-        
+
         let board = createBoard(from: boardString)
         return createGameState(board: board, currentPlayer: .black)
     }
-    
+
     // MARK: - Performance Test Utilities
-    
+
     /// Measures execution time of a block
     /// - Parameter block: Block to measure
     /// - Returns: Execution time in seconds
@@ -169,7 +169,7 @@ public struct TestUtilities {
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         return (result, timeElapsed)
     }
-    
+
     /// Measures execution time of an async block
     /// - Parameter block: Async block to measure
     /// - Returns: Execution time in seconds
@@ -179,9 +179,9 @@ public struct TestUtilities {
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         return (result, timeElapsed)
     }
-    
+
     // MARK: - Assertion Helpers
-    
+
     /// Asserts that two boards are equal with detailed failure message
     /// - Parameters:
     ///   - board1: First board
@@ -193,30 +193,30 @@ public struct TestUtilities {
         message: String = "Boards should be equal"
     ) {
         guard board1 != board2 else { return }
-        
+
         var differences: [String] = []
-        
+
         for position in BoardPosition.allPositions {
             if board1[position] != board2[position] {
                 differences.append("\(position.algebraicNotation): \(board1[position]) != \(board2[position])")
             }
         }
-        
+
         let detailedMessage = """
         \(message)
         Differences:
         \(differences.joined(separator: "\n"))
-        
+
         Board 1:
         \(board1.description)
-        
+
         Board 2:
         \(board2.description)
         """
-        
+
         fatalError(detailedMessage)
     }
-    
+
     /// Asserts that a game state is valid
     /// - Parameters:
     ///   - gameState: Game state to validate
@@ -226,14 +226,14 @@ public struct TestUtilities {
         using engine: GameEngineProtocol = GameEngine()
     ) {
         let issues = (engine as? GameEngine)?.validateGameState(gameState) ?? []
-        
+
         if !issues.isEmpty {
             fatalError("Invalid game state:\n\(issues.joined(separator: "\n"))")
         }
     }
-    
+
     // MARK: - Test Data Generators
-    
+
     /// Generates a sequence of valid moves for testing AI
     /// - Parameters:
     ///   - gameState: Starting game state
@@ -246,38 +246,38 @@ public struct TestUtilities {
         let engine = GameEngine()
         var currentState = gameState
         var moves: [Move] = []
-        
+
         for _ in 0..<maxMoves {
             let availableMoves = engine.availableMoves(for: currentState)
             guard !availableMoves.isEmpty else { break }
-            
+
             // Take the first available move
             let move = Move(position: availableMoves[0], player: currentState.currentPlayer)
             moves.append(move)
-            
+
             guard let result = engine.applyMove(move, to: currentState) else { break }
             currentState = result.newGameState
-            
+
             if engine.isGameOver(currentState) {
                 break
             }
         }
-        
+
         return moves
     }
-    
+
     /// Creates test scenarios for different game phases
     public enum GamePhaseScenario {
         case opening    // First few moves
         case midgame    // Active piece development
         case endgame    // Few empty squares left
         case finished   // Game over
-        
+
         var gameState: GameState {
             switch self {
             case .opening:
                 return GameState.newHumanVsHuman()
-                
+
             case .midgame:
                 let boardString = """
                 ........
@@ -291,10 +291,10 @@ public struct TestUtilities {
                 """
                 let board = TestUtilities.createBoard(from: boardString)
                 return TestUtilities.createGameState(board: board)
-                
+
             case .endgame:
                 return TestUtilities.createNearEndgameState()
-                
+
             case .finished:
                 let fullBoard = TestUtilities.createRandomBoard(blackPieces: 35, whitePieces: 29)
                 return TestUtilities.createGameState(
@@ -311,11 +311,11 @@ public struct TestUtilities {
 /// Random number generator with a seed for reproducible tests
 struct SeededRandomNumberGenerator: RandomNumberGenerator {
     private var state: UInt64
-    
+
     init(seed: UInt64) {
         self.state = seed
     }
-    
+
     mutating func next() -> UInt64 {
         state = state &* 6364136223846793005 &+ 1
         return state
@@ -333,14 +333,14 @@ extension Board {
         guard cleanPattern.count == 64 else {
             fatalError("Pattern must have exactly 64 characters")
         }
-        
+
         var placements: [BoardPosition: CellState] = [:]
-        
+
         for (index, char) in cleanPattern.enumerated() {
             let row = index / 8
             let col = index % 8
             let position = BoardPosition(row: row, col: col)
-            
+
             switch char {
             case ".", "-", "_":
                 placements[position] = .empty
@@ -352,7 +352,7 @@ extension Board {
                 fatalError("Invalid character '\(char)' in pattern")
             }
         }
-        
+
         return Board().placing(placements)
     }
 }

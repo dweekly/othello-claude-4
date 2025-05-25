@@ -4,7 +4,6 @@
 //
 import SwiftUI
 
-
 struct BoardView: View {
     let viewModel: GameViewModel
 
@@ -16,7 +15,7 @@ struct BoardView: View {
             let availableWidth = geometry.size.width
             let availableHeight = geometry.size.height
             let boardSize = min(availableWidth, availableHeight)
-            
+
             LazyVGrid(columns: gridColumns, spacing: 0) {
                 ForEach(0..<64, id: \.self) { index in
                     let row = index / 8
@@ -61,7 +60,7 @@ struct BoardView: View {
         .padding(.horizontal)
 #endif
     }
-    
+
     private var boardBackgroundColor: Color {
 #if os(macOS)
         Color(red: 0.0, green: 0.5, blue: 0.15) // Slightly darker green for contrast

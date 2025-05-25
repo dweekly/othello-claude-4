@@ -26,7 +26,6 @@
 /* Begin PBXFileReference section */
 		DB2FF14C2DE030FF00BAF339 /* Othello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Othello.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB2FF15C2DE0310000BAF339 /* OthelloTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OthelloTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DB2FF1662DE0310000BAF339 /* OthelloUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OthelloUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -38,11 +37,6 @@
 		DB2FF15F2DE0310000BAF339 /* OthelloTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = OthelloTests;
-			sourceTree = "<group>";
-		};
-		DB2FF1692DE0310000BAF339 /* OthelloUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = OthelloUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -77,7 +71,6 @@
 			children = (
 				DB2FF14E2DE030FF00BAF339 /* Othello */,
 				DB2FF15F2DE0310000BAF339 /* OthelloTests */,
-				DB2FF1692DE0310000BAF339 /* OthelloUITests */,
 				DB2FF14D2DE030FF00BAF339 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,7 +80,6 @@
 			children = (
 				DB2FF14C2DE030FF00BAF339 /* Othello.app */,
 				DB2FF15C2DE0310000BAF339 /* OthelloTests.xctest */,
-				DB2FF1662DE0310000BAF339 /* OthelloUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";

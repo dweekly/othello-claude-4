@@ -77,7 +77,7 @@ struct CellView: View {
         Color(.systemGreen)
 #endif
     }
-    
+
     private var boardLineColor: Color {
 #if os(macOS)
         Color(red: 0.0, green: 0.4, blue: 0.1) // Darker green for grid lines

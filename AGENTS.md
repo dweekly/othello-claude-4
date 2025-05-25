@@ -2,6 +2,45 @@
 
 This document provides guidelines for AI agents working on the Othello iOS project to ensure consistent, high-quality code.
 
+## Session Initialization Checklist
+
+### Environment Verification
+At the start of each new development session, AI agents should verify the development environment by running this command:
+
+```bash
+echo "=== Development Environment Check ===" && \
+for tool in rg fd bat eza jq yq tree watch delta gh htop hyperfine git swiftlint xcodebuild swift; do
+    if command -v $tool >/dev/null 2>&1; then
+        echo "✅ $tool: $(command -v $tool)"
+    else
+        echo "❌ $tool: not found - run: brew install $tool"
+    fi
+done && \
+echo "=== Project Status ===" && \
+echo "Working directory: $(pwd)" && \
+echo "Git status: $(git status --porcelain | wc -l) changes" && \
+echo "Swift files: $(fd -e swift | wc -l) files" && \
+echo "Test files: $(fd -e swift | rg -i test | wc -l) test files"
+```
+
+### Expected Environment State
+All tools should show ✅ status:
+- **Core search tools**: rg, fd, bat, eza  
+- **Development utilities**: jq, yq, tree, watch, delta, gh, htop, hyperfine
+- **Swift/iOS tools**: git, swiftlint, xcodebuild, swift
+
+If any tools are missing, install them immediately:
+```bash
+brew install [missing-tool-name]
+```
+
+### Project Context Verification
+Before starting work, agents should also verify:
+1. **Current directory**: Confirm working in the correct project root
+2. **Git status**: Check for uncommitted changes
+3. **Build status**: Verify project compiles successfully
+4. **TODO.md status**: Review current phase and priorities
+
 ## Code Style and Standards
 
 ### Swift Style Guide
@@ -150,6 +189,29 @@ This ensures we maintain the highest quality standards and never advance with te
 5. **Test thoroughly**: Run full test suite before considering work complete
 6. **Update documentation**: Keep TODO.md and other docs current with changes
 
+### Efficient Development Workflow
+**Use modern tools for faster development:**
+- **Search code**: Use `rg` instead of `grep` for all text searches
+- **Find files**: Use `fd` instead of `find` for file discovery
+- **View code**: Use `bat` instead of `cat` for syntax-highlighted file reading
+- **Navigate**: Use `eza` instead of `ls` for better directory listings
+- **Benchmark**: Use `hyperfine` for reliable performance measurements
+
+**Example workflow:**
+```bash
+# 1. Find files related to AI
+fd AI.*swift
+
+# 2. Search for specific patterns
+rg "calculateMove" --type swift -A 5
+
+# 3. View file with syntax highlighting
+bat Othello/Othello/Services/AIService.swift
+
+# 4. Check project structure
+eza --tree --level=2 Othello/
+```
+
 ### File Modifications
 - Always read the full file before making changes
 - Preserve existing code style and formatting
@@ -212,3 +274,127 @@ struct GameView: View {
 - Use Swift DocC format for documentation
 - Include usage examples in documentation
 - Update documentation when changing APIs
+
+## Development Tools Requirements
+
+### Required CLI Tools
+The following tools should be installed via Homebrew to support efficient development:
+
+```bash
+# Core search and file tools
+brew install ripgrep          # Fast text search (rg command)
+brew install fd               # Fast file finder (fd command)
+brew install bat              # Enhanced cat with syntax highlighting
+brew install eza              # Modern ls replacement with Git integration
+
+# Development utilities
+brew install jq               # JSON processor for API responses
+brew install yq               # YAML processor
+brew install tree             # Directory tree visualization
+brew install watch            # Execute commands periodically
+
+# Git and version control
+brew install git-delta        # Better git diffs
+brew install gh               # GitHub CLI for PR/issue management
+
+# Performance and monitoring
+brew install htop             # Better process viewer
+brew install hyperfine        # Command-line benchmarking
+```
+
+### Tool Verification
+Run this command to check if all required tools are available:
+```bash
+for tool in rg fd bat eza jq yq tree watch delta gh htop hyperfine; do
+    if command -v $tool >/dev/null 2>&1; then
+        echo "✅ $tool: $(command -v $tool)"
+    else
+        echo "❌ $tool: not found"
+    fi
+done
+```
+
+### Tool Usage Guidelines
+- **ripgrep (rg)**: Use instead of grep for all text searches
+- **fd**: Use instead of find for file searches  
+- **bat**: Use instead of cat for file viewing with syntax highlighting
+- **eza**: Use instead of ls for directory listings
+- **hyperfine**: Use for performance benchmarking of build/test commands
+
+### Current Environment Status
+✅ **All tools are installed and verified working:**
+
+**Core search and file tools:**
+- ✅ **ripgrep (rg)**: Fast text search
+- ✅ **fd**: Fast file finder  
+- ✅ **bat**: Enhanced cat with syntax highlighting
+- ✅ **eza**: Modern ls replacement
+
+**Development utilities:**
+- ✅ **jq**: JSON processor
+- ✅ **yq**: YAML processor
+- ✅ **tree**: Directory tree visualization
+- ✅ **watch**: Command monitoring
+- ✅ **git-delta**: Better git diffs
+- ✅ **gh**: GitHub CLI
+- ✅ **htop**: Process viewer
+- ✅ **hyperfine**: Command benchmarking
+
+**Swift/iOS development:**
+- ✅ **git**: Version control
+- ✅ **swiftlint**: Code linting
+- ✅ **xcodebuild**: Xcode build tools
+- ✅ **swift**: Swift compiler
+
+The development environment is fully configured and optimized for AI agent productivity.
+
+### AI Agent Benefits
+These tools significantly improve AI agent efficiency:
+- **rg**: 10-100x faster than grep for code searches
+- **fd**: Much faster than find for file discovery
+- **bat**: Syntax highlighting helps with code analysis
+- **hyperfine**: Reliable performance benchmarking for optimization tasks
+
+### Practical Tool Examples
+
+**Code searches with ripgrep:**
+```bash
+# Find all async functions
+rg "func.*async" --type swift
+
+# Find protocol implementations
+rg "final class.*: .*Protocol" --type swift
+
+# Search for error handling patterns
+rg "(throw|catch|Result)" --type swift -A 2
+```
+
+**File discovery with fd:**
+```bash
+# Find all Swift test files
+fd -e swift | rg -i test
+
+# Find specific file types
+fd -e swift -e md
+
+# Find files matching pattern
+fd "AI.*\.swift$"
+```
+
+**Project structure with eza:**
+```bash
+# Show project tree with git status
+eza --tree --level=3 --git
+
+# List files with metadata
+eza -la --git --header
+```
+
+**Performance benchmarking:**
+```bash
+# Benchmark build times
+hyperfine "xcodebuild -project Othello/Othello.xcodeproj -scheme Othello build"
+
+# Compare different commands
+hyperfine "rg 'pattern'" "grep -r 'pattern'"
+```

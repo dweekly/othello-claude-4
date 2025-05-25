@@ -1,6 +1,6 @@
-# Othello iOS
+# Othello
 
-A modern, accessible implementation of the classic Othello (Reversi) board game for iOS 18, built with SwiftUI and Swift Testing.
+A modern, accessible implementation of the classic Othello (Reversi) board game built with SwiftUI and Swift Testing. Currently available for macOS with iOS adaptation ready.
 
 ## Features
 
@@ -12,15 +12,16 @@ A modern, accessible implementation of the classic Othello (Reversi) board game 
 
 ## Requirements
 
-- iOS 18.0+
+- macOS 14.0+ (current implementation)
+- iOS 18.0+ (planned)
 - Xcode 16.0+
 - Swift 6.0+
 
 ## Getting Started
 
 1. Clone the repository
-2. Open `OthelloApp.xcodeproj` in Xcode
-3. Build and run on simulator or device
+2. Open `Othello/Othello.xcodeproj` in Xcode
+3. Build and run on macOS
 
 ## Game Rules
 
@@ -35,51 +36,39 @@ This app follows MVVM + Clean Architecture principles:
 - **Views**: SwiftUI components with built-in accessibility
 - **Services**: AI engine, game rules, persistence
 
-See [ARCHITECTURE.md](Documentation/ARCHITECTURE.md) for detailed technical information.
-
 ## Testing
 
 Run tests with `⌘+U` in Xcode or:
 
 ```bash
-xcodebuild test -scheme OthelloApp -destination 'platform=iOS Simulator,name=iPhone 15'
+xcodebuild test -project Othello/Othello.xcodeproj -scheme Othello -destination 'platform=macOS'
 ```
 
-## Accessibility
+## Current Status
 
-This app is designed to be fully accessible:
-
-- VoiceOver announcements for all game actions
-- Dynamic Type support for all text
-- High contrast mode compatibility
-- Reduced motion respect
-
-See [ACCESSIBILITY.md](Documentation/ACCESSIBILITY.md) for implementation details.
+✅ **Phase 5 Complete**: Advanced AI implementation with 3-tier difficulty system  
+🎯 **Next**: iOS adaptation and App Store deployment  
+📋 **Future**: Full Apple ecosystem expansion (iPadOS, tvOS, watchOS)
 
 ## Project Documentation
 
-### Development Guidelines
+### Core Documentation (Root)
 - **[AGENTS.md](AGENTS.md)** - AI agent development guidelines and coding standards
-- **[ARCHITECTURE.md](Documentation/ARCHITECTURE.md)** - Technical architecture and design decisions
-- **[TESTING.md](Documentation/TESTING.md)** - Testing strategies and conventions
-- **[ACCESSIBILITY.md](Documentation/ACCESSIBILITY.md)** - Accessibility implementation guide
-
-### Quality and Excellence
-- **[QUALITY-EXCELLENCE.md](QUALITY-EXCELLENCE.md)** - Quality framework and standards
-- **[SECURITY.md](SECURITY.md)** - Security implementation and best practices
-- **[OBSERVABILITY.md](OBSERVABILITY.md)** - Logging, monitoring, and performance tracking
-
-### Platform and Localization
+- **[TODO.md](TODO.md)** - Current development roadmap and task tracking  
 - **[PLATFORM-STRATEGY.md](PLATFORM-STRATEGY.md)** - Multi-platform expansion strategy
-- **[LOCALIZATION.md](LOCALIZATION.md)** - Internationalization and localization guide
 
-### Project Management
-- **[TODO.md](TODO.md)** - Current development roadmap and task tracking
-- **[SERVER-TODO.md](SERVER-TODO.md)** - Server-side features and multiplayer roadmap
+### Extended Documentation (docs/)
+- **[QUALITY-EXCELLENCE.md](docs/QUALITY-EXCELLENCE.md)** - Quality framework and standards
+- **[SECURITY.md](docs/SECURITY.md)** - Security implementation and best practices
+- **[OBSERVABILITY.md](docs/OBSERVABILITY.md)** - Logging, monitoring, and performance tracking
+- **[LOCALIZATION.md](docs/LOCALIZATION.md)** - Internationalization and localization guide
+- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** - Contribution guidelines and setup
+- **[GITHUB-SETUP.md](docs/GITHUB-SETUP.md)** - GitHub configuration and CI/CD
+- **[SERVER-TODO.md](docs/SERVER-TODO.md)** - Server-side features and multiplayer roadmap
 
 ## Contributing
 
-Please read the development guidelines in [AGENTS.md](AGENTS.md) and ensure all quality gates in [QUALITY-EXCELLENCE.md](QUALITY-EXCELLENCE.md) are met.
+Please read the development guidelines in [AGENTS.md](AGENTS.md) and ensure all quality gates are met.
 
 ## License
 

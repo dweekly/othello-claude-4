@@ -10,7 +10,7 @@ import Foundation
 /// and potentially swap AI implementations.
 protocol AIServiceProtocol {
     // MARK: - Move Calculation
-    
+
     /// Calculates the best move for an AI player asynchronously
     /// - Parameters:
     ///   - gameState: Current game state
@@ -22,7 +22,7 @@ protocol AIServiceProtocol {
         playerInfo: PlayerInfo,
         using gameEngine: GameEngineProtocol
     ) async -> Move?
-    
+
     /// Calculates the best move for a specific difficulty level
     /// - Parameters:
     ///   - gameState: Current game state
@@ -36,9 +36,9 @@ protocol AIServiceProtocol {
         difficulty: AIDifficulty,
         using gameEngine: GameEngineProtocol
     ) async -> Move?
-    
+
     // MARK: - AI Analysis
-    
+
     /// Evaluates a position and returns detailed analysis
     /// - Parameters:
     ///   - gameState: Current game state
@@ -52,7 +52,7 @@ protocol AIServiceProtocol {
         difficulty: AIDifficulty,
         using gameEngine: GameEngineProtocol
     ) async -> AIAnalysis
-    
+
     /// Gets move recommendations with confidence scores
     /// - Parameters:
     ///   - gameState: Current game state
@@ -66,12 +66,12 @@ protocol AIServiceProtocol {
         difficulty: AIDifficulty,
         using gameEngine: GameEngineProtocol
     ) async -> [MoveRecommendation]
-    
+
     // MARK: - Performance
-    
+
     /// Cancels any ongoing AI calculation
     func cancelCalculation()
-    
+
     /// Whether the AI is currently calculating a move
     var isCalculating: Bool { get }
 }
@@ -87,7 +87,7 @@ struct AIAnalysis: Codable {
     let nodesEvaluated: Int
     let calculationTimeMs: Int
     let principalVariation: [Move] // Best line of play
-    
+
     init(
         position: PositionAnalysis,
         bestMove: BoardPosition?,
@@ -113,13 +113,6 @@ struct MoveRecommendation: Codable {
     let evaluation: Double
     let confidence: Double
     let reasoning: String
-    
-    init(move: BoardPosition, evaluation: Double, confidence: Double, reasoning: String) {
-        self.move = move
-        self.evaluation = evaluation
-        self.confidence = confidence
-        self.reasoning = reasoning
-    }
 }
 
 // MARK: - Default Implementation Extensions
@@ -135,7 +128,7 @@ extension AIServiceProtocol {
               let difficulty = playerInfo.aiDifficulty else {
             return nil
         }
-        
+
         return await calculateMove(
             for: gameState,
             player: playerInfo.player,

@@ -31,7 +31,7 @@ class GameViewModel {
 
     func makeMove(at position: BoardPosition) {
         guard !isProcessingMove && !isAIThinking else { return }
-        
+
         // Simply ignore invalid moves - no popup or feedback
         guard validMoves.contains(position) else { return }
 
@@ -59,29 +59,29 @@ class GameViewModel {
 
         isProcessingMove = false
     }
-    
+
     private func processNextPlayerTurn() {
         // Prevent recursion and ensure we're still playing
         guard gameState.gamePhase == .playing && !isAIThinking else { return }
-        
-        let currentPlayerInfo = gameState.currentPlayer == .black ? 
+
+        let currentPlayerInfo = gameState.currentPlayer == .black ?
             gameState.blackPlayerInfo : gameState.whitePlayerInfo
-        
+
         if currentPlayerInfo.isAI {
             Task {
                 await makeAIMove()
             }
         }
     }
-    
+
     private func makeAIMove() async {
         guard gameState.gamePhase == .playing && !isAIThinking else { return }
-        
+
         isAIThinking = true
-        
-        let currentPlayerInfo = gameState.currentPlayer == .black ? 
+
+        let currentPlayerInfo = gameState.currentPlayer == .black ?
             gameState.blackPlayerInfo : gameState.whitePlayerInfo
-        
+
         if let aiMove = await aiService.calculateMove(
             for: gameState,
             playerInfo: currentPlayerInfo,
@@ -91,13 +91,13 @@ class GameViewModel {
             if let newState = gameState.applyingMove(aiMove) {
                 gameState = newState
                 updateValidMoves()
-                
+
                 // Provide haptic feedback for AI move
                 #if canImport(UIKit)
                 let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
                 impactFeedback.impactOccurred()
                 #endif
-                
+
                 // Check if game just finished
                 if gameState.gamePhase == .finished {
                     showingGameCompletionAlert = true
@@ -107,10 +107,10 @@ class GameViewModel {
                 }
             }
         } else {
-            print("DEBUG: AI service returned nil move")
+            // AI service returned nil move
         }
-        
-        print("DEBUG: makeAIMove completed")
+
+        // makeAIMove completed
         isAIThinking = false
     }
 
@@ -132,17 +132,17 @@ class GameViewModel {
         isAIThinking = false
         showingGameCompletionAlert = false
         showingNewGameConfirmation = false
-        
+
         // Cancel any ongoing AI calculation
         aiService.cancelCalculation()
-        
+
         // Start AI move if black player is AI
         processNextPlayerTurn()
     }
-    
+
     func startNewGame(blackPlayer: PlayerInfo, whitePlayer: PlayerInfo) {
-        print("DEBUG: Starting new game - Black: \(blackPlayer.type) \(blackPlayer.aiDifficulty?.rawValue ?? ""), White: \(whitePlayer.type) \(whitePlayer.aiDifficulty?.rawValue ?? "")")
-        
+        // Starting new game with configured players
+
         gameState = gameEngine.newGame(
             blackPlayer: blackPlayer,
             whitePlayer: whitePlayer
@@ -152,12 +152,12 @@ class GameViewModel {
         isAIThinking = false
         showingGameCompletionAlert = false
         showingNewGameConfirmation = false
-        
+
         // Cancel any ongoing AI calculation
         aiService.cancelCalculation()
-        
-        print("DEBUG: New game created, current player: \(gameState.currentPlayer)")
-        
+
+        // New game created
+
         // Start AI move if black player is AI
         processNextPlayerTurn()
     }
@@ -175,7 +175,7 @@ class GameViewModel {
     }
 
     var currentPlayerName: String {
-        let playerInfo = gameState.currentPlayer == .black ? 
+        let playerInfo = gameState.currentPlayer == .black ?
             gameState.blackPlayerInfo : gameState.whitePlayerInfo
         return playerInfo.displayName
     }
@@ -192,7 +192,7 @@ class GameViewModel {
             let winner = gameEngine.winner(of: gameState)
             let blackPlayerInfo = gameState.blackPlayerInfo
             let whitePlayerInfo = gameState.whitePlayerInfo
-            
+
             switch winner {
             case .black: return "\(blackPlayerInfo.displayName) wins!"
             case .white: return "\(whitePlayerInfo.displayName) wins!"

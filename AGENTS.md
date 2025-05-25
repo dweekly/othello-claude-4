@@ -28,11 +28,20 @@ All tools should show ✅ status:
 - **Core search tools**: rg, fd, bat, eza  
 - **Development utilities**: jq, yq, tree, watch, delta, gh, htop, hyperfine
 - **Swift/iOS tools**: git, swiftlint, xcodebuild, swift
+- **Project management**: xcodegen
 
 If any tools are missing, install them immediately:
 ```bash
 brew install [missing-tool-name]
 ```
+
+### Project Management Workflow
+This project uses **XcodeGen** for project file management:
+
+1. **Never edit .xcodeproj files directly** - they are generated and gitignored
+2. **Edit project.yml** to modify targets, schemes, settings, or dependencies  
+3. **Regenerate project** with `./scripts/generate-project.sh` or `xcodegen generate`
+4. **Pre-commit hook** automatically regenerates project if project.yml is newer
 
 ### Project Context Verification
 Before starting work, agents should also verify:

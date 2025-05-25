@@ -1,0 +1,96 @@
+name: Othello
+options:
+  bundleIdPrefix: co.primatechpaper
+  createIntermediateGroups: true
+  groupSortPosition: top
+  generateEmptyDirectories: false
+  
+# Project settings
+settings:
+  MARKETING_VERSION: "1.0"
+  CURRENT_PROJECT_VERSION: "1"
+  SWIFT_VERSION: "5.0"
+  IPHONEOS_DEPLOYMENT_TARGET: "18.4"
+  MACOSX_DEPLOYMENT_TARGET: "14.0"
+
+# File groups for better organization
+fileGroups:
+  - Othello/Othello
+  - Othello/OthelloTests
+  - README.md
+  - TODO.md
+  - AGENTS.md
+  - PLATFORM-STRATEGY.md
+
+targets:
+  Othello:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Othello/Othello
+        excludes:
+          - "*.md"
+    resources:
+      - Othello/Othello/Assets.xcassets
+    entitlements:
+      path: Othello/Othello/Othello.entitlements
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: co.primatechpaper.Othello
+        PRODUCT_NAME: Othello
+        SWIFT_EMIT_LOC_STRINGS: true
+        REGISTER_APP_GROUPS: true
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks"
+        ENABLE_HARDENED_RUNTIME: true
+        COMBINE_HIDPI_IMAGES: true
+        SDKROOT: macosx
+        SUPPORTED_PLATFORMS: "macosx iphoneos iphonesimulator xros xrsimulator"
+        TARGETED_DEVICE_FAMILY: "1,2,7"
+        GENERATE_INFOPLIST_FILE: true
+    scheme:
+      testTargets:
+        - OthelloTests
+      gatherCoverageData: true
+      
+  OthelloTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Othello/OthelloTests
+        excludes:
+          - "*.md"
+    dependencies:
+      - target: Othello
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: co.primatechpaper.OthelloTests
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Othello.app/Contents/MacOS/Othello"
+        SDKROOT: macosx
+        GENERATE_INFOPLIST_FILE: true
+
+schemes:
+  Othello:
+    build:
+      targets:
+        Othello: all
+        OthelloTests: [test]
+    run:
+      config: Debug
+      commandLineArguments:
+        "-com.apple.CoreData.ConcurrencyDebug": 1
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - name: OthelloTests
+          parallelizable: false
+          randomExecutionOrder: false
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

@@ -141,14 +141,16 @@ type_name:
 
 # Paths
 included:
-  - Othello
+  - Othello/Othello
+  - Othello/OthelloTests
 
 excluded:
-  - Othello/OthelloTests
   - Othello/build
   - .build
   - .swiftpm
   - DerivedData
+  - Carthage
+  - Pods
 
 # Custom rules for our project
 custom_rules:

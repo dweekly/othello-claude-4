@@ -19,9 +19,35 @@ A modern, accessible implementation of the classic Othello (Reversi) board game 
 
 ## Getting Started
 
-1. Clone the repository
-2. Open `Othello/Othello.xcodeproj` in Xcode
-3. Build and run on macOS
+### Prerequisites
+- **macOS 14.0+** (Primary platform)
+- **Xcode 16.0+** with Swift 5.9
+- **SwiftLint** and **XcodeGen** for development
+
+### Setup
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd othello-claude-4
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   brew install swiftlint xcodegen
+   ```
+
+3. **Generate and open project**:
+   ```bash
+   ./scripts/generate-project.sh
+   open Othello.xcodeproj
+   ```
+
+4. **Build and run** (⌘+R)
+
+### Development
+- **Project is managed by XcodeGen** - edit `project.yml` instead of `.xcodeproj`
+- **Pre-commit hooks** ensure code quality and test compilation
+- **Generated project files** are gitignored - run `./scripts/generate-project.sh` after pulling changes
 
 ## Game Rules
 
@@ -41,8 +67,10 @@ This app follows MVVM + Clean Architecture principles:
 Run tests with `⌘+U` in Xcode or:
 
 ```bash
-xcodebuild test -project Othello/Othello.xcodeproj -scheme Othello -destination 'platform=macOS'
+xcodebuild test -scheme Othello -destination 'platform=macOS'
 ```
+
+**Note**: Tests use Swift Testing framework and build successfully. Manual verification may be needed for command-line test execution.
 
 ## Current Status
 

@@ -154,6 +154,11 @@ coverage/
 Generated/
 **/Generated/
 
+# XcodeGen generated files
+*.xcodeproj
+*.xcworkspace
+!*.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+
 # Backup files
 *.backup
 *.bak

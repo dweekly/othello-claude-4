@@ -8,7 +8,6 @@ import Foundation
 
 @Suite("BoardPosition Tests")
 struct BoardPositionTests {
-
     @Test("Valid positions are correctly identified")
     func testValidPositions() {
         #expect(BoardPosition(row: 0, col: 0).isValid)

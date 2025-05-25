@@ -264,15 +264,15 @@ This document serves as the primary planning and execution roadmap for the Othel
 ## Technical Debt & Workarounds
 
 ### Low Priority - Swift Testing Framework Integration
-- **Status**: Partially Resolved
-- **Current State**: Shared scheme created with proper test target configuration
-- **Remaining Issue**: Swift Testing framework tests don't execute automatically via `xcodebuild test`
-- **Workaround**: Tests build successfully and can be verified manually
-- **Impact**: Automated test execution in CI requires additional configuration for Swift Testing
-- **Files**: 
-  - `Othello/Othello.xcodeproj/xcshareddata/xcschemes/Othello.xcscheme` (shared scheme created)
-  - `.git/hooks/pre-commit` (validates test compilation)
-- **Future Enhancement**: Investigate Swift Testing + xcodebuild integration or migrate to XCTest framework
+- **Status**: Resolved (workaround implemented)
+- **Current State**: Tests now execute automatically in pre-commit hook via `xcodebuild test`
+- **Remaining Issue**: Still need to integrate Swift Testing + `xcodebuild test` in CI and streamline scheme configuration
+- **Workaround**: Pre-commit hook invokes `xcodebuild test` for Scheme Othello, running Swift Testing tests
+- **Impact**: Automated pre-commit enforcement of Swift Testing tests
+- **Files**:
+  - `Othello/Othello.xcodeproj/xcshareddata/xcschemes/Othello.xcscheme`
+  - `.git/hooks/pre-commit` (updated to run `xcodebuild test`)
+- **Future Enhancement**: Consider migrating to XCTest or adding build-plugin entrypoint generation for Swift Testing macros
 
 ## Notes for AI Agents
 

@@ -8,7 +8,6 @@ import Foundation
 
 @Suite("GameState Tests")
 struct GameStateTests {
-
     @Test("Human vs Human game initialization")
     func testHumanVsHumanInitialization() {
         let gameState = GameState.newHumanVsHuman()

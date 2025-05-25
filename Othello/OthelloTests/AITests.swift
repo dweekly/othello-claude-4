@@ -8,7 +8,6 @@ import Testing
 
 /// Fast tests specifically for AI functionality
 struct AITests {
-
     let gameEngine = GameEngine()
     let aiService = AIService()
 

@@ -8,7 +8,6 @@ import Foundation
 
 @Suite("GameEngine Tests")
 struct GameEngineTests {
-
     let engine = GameEngine()
 
     @Test("New game initialization")

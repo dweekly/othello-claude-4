@@ -13,7 +13,6 @@ struct MoveEvaluation {
 
 /// Production implementation of the AI service for Othello
 final class AIService: AIServiceProtocol {
-
     // MARK: - Properties
 
     private var calculationTask: Task<Move?, Never>?
@@ -36,7 +35,6 @@ final class AIService: AIServiceProtocol {
         difficulty: AIDifficulty,
         using gameEngine: GameEngineProtocol
     ) async -> Move? {
-
         // Cancel any existing calculation
         cancelCalculation()
 
@@ -98,7 +96,6 @@ final class AIService: AIServiceProtocol {
         difficulty: AIDifficulty,
         using gameEngine: GameEngineProtocol
     ) async -> AIAnalysis {
-
         let startTime = CFAbsoluteTimeGetCurrent()
         let baseAnalysis = gameEngine.analyzePosition(gameState)
 
@@ -136,7 +133,7 @@ final class AIService: AIServiceProtocol {
         }
 
         let endTime = CFAbsoluteTimeGetCurrent()
-        let calculationTimeMs = Int((endTime - startTime) * 1000)
+        let calculationTimeMs = Int((endTime - startTime) * 1_000)
 
         return AIAnalysis(
             position: baseAnalysis,
@@ -233,7 +230,6 @@ final class AIService: AIServiceProtocol {
         depth: Int,
         gameEngine: GameEngineProtocol
     ) async -> MoveEvaluation {
-
         let availableMoves = gameEngine.availableMoves(for: player, in: gameState)
         guard !availableMoves.isEmpty else {
             return MoveEvaluation(move: nil, score: -Double.infinity, nodesEvaluated: 1)
@@ -276,7 +272,6 @@ final class AIService: AIServiceProtocol {
         targetPlayer: Player,
         gameEngine: GameEngineProtocol
     ) async -> MoveEvaluation {
-
         // Base case
         if depth == 0 || gameEngine.isGameOver(gameState) {
             let score = gameEngine.evaluatePosition(gameState, for: targetPlayer)

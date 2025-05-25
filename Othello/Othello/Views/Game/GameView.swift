@@ -81,7 +81,8 @@ struct GameView: View {
 
 struct GameSetupView: View {
     let viewModel: GameViewModel
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
 
     @State private var gameMode: GameMode = .humanVsAI
     @State private var selectedAIDifficulty: AIDifficulty = .medium

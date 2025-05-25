@@ -15,14 +15,12 @@ private struct AlphaBetaParams {
 
 /// Alpha-beta pruning minimax algorithm implementation
 final class AlphaBetaEngine {
-
     func calculateBestMove(
         gameState: GameState,
         player: Player,
         depth: Int,
         gameEngine: GameEngineProtocol
     ) async -> MoveEvaluation {
-
         let availableMoves = gameEngine.availableMoves(for: player, in: gameState)
         guard !availableMoves.isEmpty else {
             return MoveEvaluation(
@@ -78,7 +76,6 @@ final class AlphaBetaEngine {
         params: AlphaBetaParams,
         gameEngine: GameEngineProtocol
     ) async -> MoveEvaluation {
-
         // Base case: depth reached or game over
         if params.depth == 0 || gameEngine.isGameOver(gameState) {
             let score = gameEngine.evaluatePosition(gameState, for: params.targetPlayer)

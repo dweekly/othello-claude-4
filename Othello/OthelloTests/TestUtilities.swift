@@ -7,7 +7,6 @@ import Foundation
 
 /// Utilities for creating test data and scenarios
 public struct TestUtilities {
-
     // MARK: - Board Creation Utilities
 
     /// Creates a board from ASCII art representation
@@ -315,7 +314,7 @@ struct SeededRandomNumberGenerator: RandomNumberGenerator {
     }
 
     mutating func next() -> UInt64 {
-        state = state &* 6364136223846793005 &+ 1
+        state = state &* 6_364_136_223_846_793_005 &+ 1
         return state
     }
 }

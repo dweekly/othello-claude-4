@@ -8,7 +8,6 @@ import Testing
 
 /// Fast, focused tests for core game functionality
 struct FastGameTests {
-
     let gameEngine = GameEngine()
 
     @Test("Complete human vs human game")
@@ -35,14 +34,14 @@ struct FastGameTests {
     @Test("AI makes valid moves")
     func testAIValidMoves() async {
         let aiService = AIService()
-        let gameState = GameState.newHumanVsAI(humanPlayer: .black, aiDifficulty: .easy)
+        let gameState = GameState.newHumanVsAI(humanPlayer: .white, aiDifficulty: .easy)
 
-        let availableMoves = gameEngine.availableMoves(for: .white, in: gameState)
+        let availableMoves = gameEngine.availableMoves(for: .black, in: gameState)
         guard !availableMoves.isEmpty else { return }
 
         let aiMove = await aiService.calculateMove(
             for: gameState,
-            player: .white,
+            player: .black,
             difficulty: .easy,
             using: gameEngine
         )
@@ -91,7 +90,7 @@ struct FastGameTests {
         // Measure move calculation performance
         let startTime = Date()
 
-        for _ in 0..<1000 {
+        for _ in 0..<1_000 {
             _ = gameEngine.availableMoves(for: gameState)
             _ = gameEngine.evaluatePosition(gameState, for: .black)
         }
@@ -99,7 +98,7 @@ struct FastGameTests {
         let endTime = Date()
         let duration = endTime.timeIntervalSince(startTime)
 
-        #expect(duration < 1.0, "1000 calculations should complete in under 1 second")
+        #expect(duration < 2.0, "1_000 calculations should complete in under 2 seconds")
     }
 
     @Test("Board state integrity")

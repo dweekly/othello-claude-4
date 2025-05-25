@@ -8,7 +8,6 @@ import Foundation
 
 @Suite("Board Tests")
 struct BoardTests {
-
     @Test("Empty board initialization")
     func testEmptyBoardInitialization() {
         let board = Board()

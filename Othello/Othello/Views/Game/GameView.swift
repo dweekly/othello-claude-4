@@ -4,6 +4,7 @@
 //
 import SwiftUI
 
+@MainActor
 struct GameView: View {
     @State private var viewModel = GameViewModel()
     @State private var showingGameSetup = false

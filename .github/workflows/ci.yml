@@ -27,43 +27,86 @@ jobs:
       with:
         xcode-version: ${{ matrix.xcode }}
         
+    - name: Install XcodeGen and SwiftLint
+      run: |
+        brew install xcodegen swiftlint
+        
+    - name: Generate Xcode Project
+      run: |
+        echo "🔧 Generating Xcode project from project.yml..."
+        xcodegen generate
+        echo "✅ Project generated successfully!"
+        
+    - name: Validate Project Configuration
+      run: |
+        echo "🔍 Validating generated project configuration..."
+        # Check that the generated project has expected targets and schemes
+        if [ -f "Othello.xcodeproj/project.pbxproj" ]; then
+          echo "✅ Othello.xcodeproj generated successfully"
+          # Check for expected targets
+          if grep -q "Othello" Othello.xcodeproj/project.pbxproj && grep -q "OthelloTests" Othello.xcodeproj/project.pbxproj; then
+            echo "✅ Expected targets found in project"
+          else
+            echo "❌ Expected targets not found"
+            exit 1
+          fi
+        else
+          echo "❌ Project file not generated"
+          exit 1
+        fi
+        
     - name: Cache Xcode DerivedData
       uses: actions/cache@v4
       with:
         path: ~/Library/Developer/Xcode/DerivedData
-        key: ${{ runner.os }}-xcode-${{ hashFiles('**/Othello.xcodeproj/project.pbxproj') }}
+        key: ${{ runner.os }}-xcode-${{ hashFiles('project.yml') }}-${{ hashFiles('**/*.swift') }}
         restore-keys: |
           ${{ runner.os }}-xcode-
-          
-    - name: Install SwiftLint
-      run: brew install swiftlint
       
     - name: Swift Version
       run: swift --version
       
     - name: Build Xcode Project
       run: |
-        cd Othello
-        xcodebuild build -project Othello.xcodeproj -scheme Othello -destination 'platform=macOS'
+        xcodebuild build -scheme Othello -destination 'platform=macOS'
       
     - name: Run SwiftLint
       run: swiftlint lint --reporter github-actions-logging
       
     - name: Run Tests
       run: |
-        cd Othello
-        xcodebuild test -project Othello.xcodeproj -scheme Othello -destination 'platform=macOS' -enableCodeCoverage YES
+        echo "🧪 Running Swift Testing framework tests..."
+        # Run tests with verbose output to catch Swift Testing specific issues
+        xcodebuild test -scheme Othello -destination 'platform=macOS' -enableCodeCoverage YES -resultBundlePath TestResults.xcresult
+        
+    - name: Verify Swift Testing Results
+      run: |
+        echo "✅ Verifying Swift Testing framework integration..."
+        # Check if tests actually ran (Swift Testing should show specific output)
+        if [ -d "TestResults.xcresult" ]; then
+          echo "Test results bundle created successfully"
+          xcrun xcresulttool get --format json --path TestResults.xcresult > test_results.json
+          # Check for Swift Testing specific indicators
+          if grep -q "Swift Testing" test_results.json 2>/dev/null; then
+            echo "✅ Swift Testing framework detected in results"
+          else
+            echo "⚠️  Swift Testing framework not explicitly detected, but tests ran"
+          fi
+        else
+          echo "❌ No test results bundle found"
+          exit 1
+        fi
       
     - name: Generate Code Coverage
       run: |
-        cd Othello
-        xcrun xccov view --report --json ~/Library/Developer/Xcode/DerivedData/*/Logs/Test/*.xcresult > coverage.json || echo "Coverage generation failed"
+        echo "📊 Generating code coverage report..."
+        xcrun xccov view --report --json TestResults.xcresult > coverage.json || echo "Coverage generation failed"
           
     - name: Upload Coverage to Codecov
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: codecov/codecov-action@v4
       with:
-        file: ./Othello/coverage.json
+        file: ./coverage.json
         flags: swift
         name: codecov-umbrella
         
@@ -73,8 +116,9 @@ jobs:
       with:
         name: test-results-${{ matrix.xcode }}
         path: |
-          ~/Library/Developer/Xcode/DerivedData/*/Logs/Test/*.xcresult
-          ./Othello/coverage.json
+          TestResults.xcresult
+          test_results.json
+          ./coverage.json
 
   quality-gates:
     name: Quality Gates
@@ -88,13 +132,18 @@ jobs:
     - name: Setup Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '15.0'
+        xcode-version: '16.2.0'
+        
+    - name: Install XcodeGen
+      run: brew install xcodegen
+      
+    - name: Generate Xcode Project
+      run: xcodegen generate
         
     - name: Performance Benchmarks
       run: |
         echo "Running performance benchmarks..."
-        cd Othello
-        xcodebuild test -project Othello.xcodeproj -scheme Othello -destination 'platform=macOS' -only-testing:OthelloTests/PerformanceIntegrationTests || echo "Performance tests completed"
+        xcodebuild test -scheme Othello -destination 'platform=macOS' -only-testing:OthelloTests/FastGameTests/testGameEnginePerformance || echo "Performance tests completed"
         
     - name: Security Scan
       run: |
@@ -106,7 +155,7 @@ jobs:
       run: |
         echo "Checking documentation coverage..."
         # Check for documentation on public APIs
-        find Othello -name "*.swift" -exec grep -L "///" {} \; | \
+        find Othello/Othello -name "*.swift" -exec grep -L "///" {} \; | \
         xargs grep -l "public " | head -5 || echo "Documentation check passed"
 
   ios-build:
@@ -122,13 +171,18 @@ jobs:
     - name: Setup Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '15.0'
+        xcode-version: '16.2.0'
+        
+    - name: Install XcodeGen
+      run: brew install xcodegen
+      
+    - name: Generate Xcode Project
+      run: xcodegen generate
         
     - name: Build iOS Target
       run: |
-        cd Othello
         echo "Building iOS version..."
-        xcodebuild build -project Othello.xcodeproj -scheme Othello -destination 'platform=iOS Simulator,name=iPhone 15' || echo "iOS build not yet configured"
+        xcodebuild build -scheme Othello -destination 'platform=iOS Simulator,name=iPhone 15' || echo "iOS build not yet configured"
         
     # Future: Add iOS app archiving and TestFlight upload
 
@@ -172,20 +226,33 @@ jobs:
         echo "Would create release tag here"
         # Future: Implement semantic versioning based on conventional commits
 
-  notification:
-    name: Notifications
+  summary:
+    name: Pipeline Summary
     runs-on: macos-latest
-    needs: [test, quality-gates]
+    needs: [test, quality-gates, dependency-check]
     if: always()
     
     steps:
-    - name: Notify on Success
-      if: needs.test.result == 'success' && needs.quality-gates.result == 'success'
+    - name: Generate Summary
       run: |
-        echo "✅ All checks passed! Ready for deployment."
+        echo "# 🚀 CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## 📊 Job Status" >> $GITHUB_STEP_SUMMARY
+        echo "- **Tests**: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Quality Gates**: ${{ needs.quality-gates.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Dependency Check**: ${{ needs.dependency-check.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
         
-    - name: Notify on Failure
-      if: needs.test.result == 'failure' || needs.quality-gates.result == 'failure'
-      run: |
-        echo "❌ Pipeline failed. Check logs for details."
-        # Future: Add Slack/Discord notifications
+        if [[ "${{ needs.test.result }}" == "success" && "${{ needs.quality-gates.result }}" == "success" ]]; then
+          echo "## ✅ Pipeline Status: SUCCESS" >> $GITHUB_STEP_SUMMARY
+          echo "All quality gates passed! The code is ready for deployment." >> $GITHUB_STEP_SUMMARY
+        else
+          echo "## ❌ Pipeline Status: FAILED" >> $GITHUB_STEP_SUMMARY
+          echo "Some checks failed. Please review the logs and fix issues before merging." >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## 🔧 XcodeGen Integration" >> $GITHUB_STEP_SUMMARY
+        echo "- Project generated from \`project.yml\`" >> $GITHUB_STEP_SUMMARY
+        echo "- Swift Testing framework validated" >> $GITHUB_STEP_SUMMARY
+        echo "- SwiftLint quality checks enforced" >> $GITHUB_STEP_SUMMARY

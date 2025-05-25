@@ -143,6 +143,35 @@ All commits must pass:
 - **Progress Tracking**: Mark tasks as complete and update phase status regularly
 - **Context Awareness**: Always understand where current work fits in the overall project roadmap
 
+### TODO and Workaround Management
+When implementing temporary fixes or workarounds:
+
+1. **Never rely on inline comments alone** - Always add items to TODO.md
+2. **Document temporary workarounds** with:
+   - Clear description of what was temporarily disabled/changed
+   - Reason for the workaround
+   - Steps needed to properly fix it
+   - Priority level for the permanent fix
+
+3. **Add to TODO.md structure**:
+   ```markdown
+   ## Technical Debt & Workarounds
+   
+   ### [Priority Level] - [Brief Description]
+   - **Status**: [Active Workaround/Needs Fix]
+   - **Temporary Fix**: [What was done as workaround]
+   - **Proper Solution**: [What needs to be implemented]
+   - **Impact**: [What functionality is affected]
+   - **Files**: [List of affected files]
+   ```
+
+4. **Examples of items requiring TODO.md entries**:
+   - Commented out code that should be re-enabled
+   - Simplified implementations pending full features
+   - Configuration workarounds
+   - Disabled tests or checks
+   - Manual processes that should be automated
+
 ### Phase Transition Requirements
 Before proposing to move to the next development phase, **ALL** of the following must be verified:
 

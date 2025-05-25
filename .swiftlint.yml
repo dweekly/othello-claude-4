@@ -109,12 +109,12 @@ nesting:
 # File header requirement
 file_header:
   required_pattern: |
-                    \/\/
-                    \/\/ .*\.swift
-                    \/\/ Othello iOS
-                    \/\/
-                    \/\/ Created.*
-                    \/\/
+    \/\/
+    \/\/ .*\.swift
+    \/\/ Othello iOS
+    \/\/
+    \/\/ Created.*
+    \/\/
 
 # Identifier naming
 identifier_name:
@@ -141,10 +141,11 @@ type_name:
 
 # Paths
 included:
-  - OthelloApp
+  - Othello
 
 excluded:
-  - OthelloApp/Tests
+  - Othello/OthelloTests
+  - Othello/build
   - .build
   - .swiftpm
   - DerivedData

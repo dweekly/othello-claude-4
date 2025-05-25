@@ -196,10 +196,8 @@ public struct TestUtilities {
 
         var differences: [String] = []
 
-        for position in BoardPosition.allPositions {
-            if board1[position] != board2[position] {
-                differences.append("\(position.algebraicNotation): \(board1[position]) != \(board2[position])")
-            }
+        for position in BoardPosition.allPositions where board1[position] != board2[position] {
+            differences.append("\(position.algebraicNotation): \(board1[position]) != \(board2[position])")
         }
 
         let detailedMessage = """

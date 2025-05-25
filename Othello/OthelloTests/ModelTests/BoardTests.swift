@@ -46,10 +46,8 @@ struct BoardTests {
             BoardPosition(row: 4, col: 4)
         ])
 
-        for position in BoardPosition.allPositions {
-            if !occupiedPositions.contains(position) {
-                #expect(board[position] == .empty, "Position \(position) should be empty")
-            }
+        for position in BoardPosition.allPositions where !occupiedPositions.contains(position) {
+            #expect(board[position] == .empty, "Position \(position) should be empty")
         }
     }
 
@@ -67,10 +65,8 @@ struct BoardTests {
         #expect(newBoard[position] == .black)
 
         // Other positions should remain the same
-        for otherPosition in BoardPosition.allPositions {
-            if otherPosition != position {
-                #expect(newBoard[otherPosition] == originalBoard[otherPosition])
-            }
+        for otherPosition in BoardPosition.allPositions where otherPosition != position {
+            #expect(newBoard[otherPosition] == originalBoard[otherPosition])
         }
     }
 
@@ -92,10 +88,8 @@ struct BoardTests {
 
         // Other positions should remain empty
         let placedPositions = Set(placements.keys)
-        for position in BoardPosition.allPositions {
-            if !placedPositions.contains(position) {
-                #expect(newBoard[position] == .empty)
-            }
+        for position in BoardPosition.allPositions where !placedPositions.contains(position) {
+            #expect(newBoard[position] == .empty)
         }
     }
 

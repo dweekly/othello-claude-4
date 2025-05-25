@@ -106,10 +106,10 @@ struct PositionAnalysis: Codable {
     let evaluation: [Player: Double]     // Overall position evaluation
 
     init(mobility: [Player: Int],
-                cornerControl: [Player: Int],
-                edgeControl: [Player: Int],
-                stability: [Player: Double],
-                evaluation: [Player: Double]) {
+         cornerControl: [Player: Int],
+         edgeControl: [Player: Int],
+         stability: [Player: Double],
+         evaluation: [Player: Double]) {
         self.mobility = mobility
         self.cornerControl = cornerControl
         self.edgeControl = edgeControl

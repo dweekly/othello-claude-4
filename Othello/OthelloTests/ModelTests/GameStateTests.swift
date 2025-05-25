@@ -29,13 +29,13 @@ struct GameStateTests {
         let gameState = GameState.newHumanVsAI(humanPlayer: .black, aiDifficulty: .medium)
 
         #expect(gameState.blackPlayerInfo.type == .human)
-        #expect(gameState.whitePlayerInfo.type == .ai)
+        #expect(gameState.whitePlayerInfo.type == .artificial)
         #expect(gameState.whitePlayerInfo.aiDifficulty == .medium)
         #expect(gameState.isCurrentPlayerHuman)
         #expect(!gameState.isCurrentPlayerAI)
 
         let reverseGame = GameState.newHumanVsAI(humanPlayer: .white, aiDifficulty: .hard)
-        #expect(reverseGame.blackPlayerInfo.type == .ai)
+        #expect(reverseGame.blackPlayerInfo.type == .artificial)
         #expect(reverseGame.whitePlayerInfo.type == .human)
         #expect(reverseGame.blackPlayerInfo.aiDifficulty == .hard)
         #expect(!reverseGame.isCurrentPlayerHuman) // Black (AI) starts
@@ -46,8 +46,8 @@ struct GameStateTests {
     func testAIVsAIInitialization() {
         let gameState = GameState.newAIVsAI(blackDifficulty: .easy, whiteDifficulty: .hard)
 
-        #expect(gameState.blackPlayerInfo.type == .ai)
-        #expect(gameState.whitePlayerInfo.type == .ai)
+        #expect(gameState.blackPlayerInfo.type == .artificial)
+        #expect(gameState.whitePlayerInfo.type == .artificial)
         #expect(gameState.blackPlayerInfo.aiDifficulty == .easy)
         #expect(gameState.whitePlayerInfo.aiDifficulty == .hard)
         #expect(gameState.isCurrentPlayerAI)
@@ -259,7 +259,7 @@ struct GameStateTests {
 
         #expect(blackInfo.type == .human)
         #expect(blackInfo.aiDifficulty == nil)
-        #expect(whiteInfo.type == .ai)
+        #expect(whiteInfo.type == .artificial)
         #expect(whiteInfo.aiDifficulty == .medium)
 
         #expect(gameState.currentPlayerInfo == blackInfo)

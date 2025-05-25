@@ -210,9 +210,11 @@ class GameViewModel {
 
         switch winner {
         case .black:
-            return "\(blackPlayerInfo.displayName) wins with \(blackScore) pieces!\n\(whitePlayerInfo.displayName) had \(whiteScore) pieces."
+            return "\(blackPlayerInfo.displayName) wins with \(blackScore) pieces!\n" +
+                   "\(whitePlayerInfo.displayName) had \(whiteScore) pieces."
         case .white:
-            return "\(whitePlayerInfo.displayName) wins with \(whiteScore) pieces!\n\(blackPlayerInfo.displayName) had \(blackScore) pieces."
+            return "\(whitePlayerInfo.displayName) wins with \(whiteScore) pieces!\n" +
+                   "\(blackPlayerInfo.displayName) had \(blackScore) pieces."
         case .none:
             return "It's a tie! Both players have \(blackScore) pieces."
         }

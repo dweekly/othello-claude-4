@@ -4,6 +4,13 @@
 //
 import Foundation
 
+/// Result of AI move calculation with performance metrics
+struct MoveEvaluation {
+    let move: BoardPosition?
+    let score: Double
+    let nodesEvaluated: Int
+}
+
 /// Production implementation of the AI service for Othello
 final class AIService: AIServiceProtocol {
 
@@ -34,7 +41,7 @@ final class AIService: AIServiceProtocol {
         cancelCalculation()
 
         // Start new calculation
-        calculationTask = Task {
+        calculationTask = Task<Move?, Never> {
             _ = CFAbsoluteTimeGetCurrent()
 
             // Add realistic thinking time based on difficulty
@@ -49,7 +56,7 @@ final class AIService: AIServiceProtocol {
             guard !availableMoves.isEmpty else { return nil }
 
             let bestPosition: BoardPosition
-            
+
             switch difficulty {
             case .easy:
                 bestPosition = await calculateEasyMove(
@@ -68,13 +75,13 @@ final class AIService: AIServiceProtocol {
                 )
 
             case .hard:
-                let (move, _, _) = await alphaBetaEngine.calculateBestMove(
+                let evaluation = await alphaBetaEngine.calculateBestMove(
                     gameState: gameState,
                     player: player,
                     depth: 4,
                     gameEngine: gameEngine
                 )
-                bestPosition = move ?? availableMoves.randomElement() ?? availableMoves[0]
+                bestPosition = evaluation.move ?? availableMoves.randomElement() ?? availableMoves[0]
             }
 
             return Move(position: bestPosition, player: player)
@@ -106,26 +113,26 @@ final class AIService: AIServiceProtocol {
             confidence = 0.3
 
         case .medium:
-            let (move, _, nodes) = await minimaxSearch(
+            let evaluation = await minimaxSearch(
                 gameState: gameState,
                 player: player,
                 depth: difficulty.searchDepth,
                 gameEngine: gameEngine
             )
-            bestMove = move
+            bestMove = evaluation.move
             confidence = 0.7
-            nodesEvaluated = nodes
+            nodesEvaluated = evaluation.nodesEvaluated
 
         case .hard:
-            let (move, _, nodes) = await alphaBetaEngine.calculateBestMove(
+            let evaluation = await alphaBetaEngine.calculateBestMove(
                 gameState: gameState,
                 player: player,
                 depth: difficulty.searchDepth,
                 gameEngine: gameEngine
             )
-            bestMove = move
+            bestMove = evaluation.move
             confidence = 0.9
-            nodesEvaluated = nodes
+            nodesEvaluated = evaluation.nodesEvaluated
         }
 
         let endTime = CFAbsoluteTimeGetCurrent()
@@ -149,13 +156,13 @@ final class AIService: AIServiceProtocol {
         using gameEngine: GameEngineProtocol
     ) async -> [MoveRecommendation] {
         let availableMoves = gameEngine.availableMoves(for: player, in: gameState)
-        
+
         var recommendations: [MoveRecommendation] = []
-        
+
         for position in availableMoves {
             let move = Move(position: position, player: player)
             guard let result = gameEngine.applyMove(move, to: gameState) else { continue }
-            
+
             let evaluation = gameEngine.evaluatePosition(result.newGameState, for: player)
             let confidence = min(1.0, max(0.0, (evaluation + 100) / 200)) // Normalize to 0-1
             let reasoning = generateMoveReasoning(
@@ -164,7 +171,7 @@ final class AIService: AIServiceProtocol {
                 gameState: gameState,
                 gameEngine: gameEngine
             )
-            
+
             recommendations.append(MoveRecommendation(
                 move: position,
                 evaluation: evaluation,
@@ -172,7 +179,7 @@ final class AIService: AIServiceProtocol {
                 reasoning: reasoning
             ))
         }
-        
+
         return recommendations.sorted { $0.evaluation > $1.evaluation }
     }
 
@@ -208,14 +215,14 @@ final class AIService: AIServiceProtocol {
         gameEngine: GameEngineProtocol
     ) async -> BoardPosition {
         // Medium AI: Basic minimax algorithm
-        let (bestMove, _, _) = await minimaxSearch(
+        let evaluation = await minimaxSearch(
             gameState: gameState,
             player: player,
             depth: AIDifficulty.medium.searchDepth,
             gameEngine: gameEngine
         )
 
-        return bestMove ?? availableMoves.first!
+        return evaluation.move ?? availableMoves.first!
     }
 
     // MARK: - Minimax Algorithm
@@ -225,10 +232,12 @@ final class AIService: AIServiceProtocol {
         player: Player,
         depth: Int,
         gameEngine: GameEngineProtocol
-    ) async -> (move: BoardPosition?, score: Double, nodesEvaluated: Int) {
+    ) async -> MoveEvaluation {
 
         let availableMoves = gameEngine.availableMoves(for: player, in: gameState)
-        guard !availableMoves.isEmpty else { return (nil, -Double.infinity, 1) }
+        guard !availableMoves.isEmpty else {
+            return MoveEvaluation(move: nil, score: -Double.infinity, nodesEvaluated: 1)
+        }
 
         var bestMove: BoardPosition?
         var bestScore = -Double.infinity
@@ -240,7 +249,7 @@ final class AIService: AIServiceProtocol {
             let move = Move(position: position, player: player)
             guard let result = gameEngine.applyMove(move, to: gameState) else { continue }
 
-            let (_, score, nodes) = await minimaxRecursive(
+            let evaluation = await minimaxRecursive(
                 gameState: result.newGameState,
                 depth: depth - 1,
                 maximizingPlayer: false,
@@ -248,7 +257,8 @@ final class AIService: AIServiceProtocol {
                 gameEngine: gameEngine
             )
 
-            totalNodes += nodes + 1
+            totalNodes += evaluation.nodesEvaluated + 1
+            let score = evaluation.score
 
             if score > bestScore {
                 bestScore = score
@@ -256,7 +266,7 @@ final class AIService: AIServiceProtocol {
             }
         }
 
-        return (bestMove, bestScore, totalNodes)
+        return MoveEvaluation(move: bestMove, score: bestScore, nodesEvaluated: totalNodes)
     }
 
     private func minimaxRecursive(
@@ -265,12 +275,12 @@ final class AIService: AIServiceProtocol {
         maximizingPlayer: Bool,
         targetPlayer: Player,
         gameEngine: GameEngineProtocol
-    ) async -> (move: BoardPosition?, score: Double, nodesEvaluated: Int) {
+    ) async -> MoveEvaluation {
 
         // Base case
         if depth == 0 || gameEngine.isGameOver(gameState) {
             let score = gameEngine.evaluatePosition(gameState, for: targetPlayer)
-            return (nil, score, 1)
+            return MoveEvaluation(move: nil, score: score, nodesEvaluated: 1)
         }
 
         let currentPlayer = gameState.currentPlayer
@@ -298,7 +308,7 @@ final class AIService: AIServiceProtocol {
             guard let result = gameEngine.applyMove(move, to: gameState) else { continue }
 
             let nextState = gameEngine.nextTurn(from: result.newGameState)
-            let (_, score, nodes) = await minimaxRecursive(
+            let evaluation = await minimaxRecursive(
                 gameState: nextState,
                 depth: depth - 1,
                 maximizingPlayer: !maximizingPlayer,
@@ -306,7 +316,8 @@ final class AIService: AIServiceProtocol {
                 gameEngine: gameEngine
             )
 
-            totalNodes += nodes + 1
+            totalNodes += evaluation.nodesEvaluated + 1
+            let score = evaluation.score
 
             if maximizingPlayer {
                 if score > bestScore {
@@ -321,7 +332,7 @@ final class AIService: AIServiceProtocol {
             }
         }
 
-        return (bestMove, bestScore, totalNodes)
+        return MoveEvaluation(move: bestMove, score: bestScore, nodesEvaluated: totalNodes)
     }
 
     // MARK: - Helper Methods

@@ -169,11 +169,16 @@ This document serves as the primary planning and execution roadmap for the Othel
 - [ ] Add memory usage monitoring
 - [ ] Test on older devices
 
-### ✅ Quality Assurance (MOSTLY COMPLETE)
+### 📋 Quality Assurance (IN PROGRESS)
 - [x] Run comprehensive test suite
-- [ ] Perform accessibility audit
+- [ ] Add XCUITest UI/end-to-end tests for key user flows (new game, moves, game over, settings)
+- [ ] Add SwiftUI snapshot tests for core views (BoardView, CellView, GameStatusView)
+- [ ] Add property-based/fuzz tests for random board states and moves
+- [ ] Add integration tests for GameViewModel → GameEngine → AIService end-to-end
+- [ ] Add smoke tests for app launch and background/foreground transitions
+- [ ] Perform accessibility audit (VoiceOver, dynamic type, contrast)
 - [x] Test across device sizes
-- [x] Validate performance benchmarks
+- [ ] Validate performance benchmarks (core logic & UI render/update)
 - [x] Security review and testing
 
 ## Phase 8 - Production Readiness
@@ -221,9 +226,10 @@ This document serves as the primary planning and execution roadmap for the Othel
 
 ## Ongoing Tasks (Throughout All Phases)
 
-### ✅ Continuous Integration (COMPLETE)
+### 🔄 Continuous Integration (IN PROGRESS)
 - [x] Set up automated testing
-- [x] Configure code quality checks
+- [ ] Fix SwiftLint configuration to lint app sources and tests
+- [ ] Configure code quality checks in CI (lint, formatting)
 - [x] Implement performance monitoring
 - [x] Add security scanning
 
@@ -255,12 +261,30 @@ This document serves as the primary planning and execution roadmap for the Othel
 - Security scan clean
 - Localization complete for target languages
 
+## Technical Debt & Workarounds
+
+### Medium Priority - Xcode Test Scheme Configuration
+- **Status**: Active Workaround
+- **Temporary Fix**: Pre-commit hook builds test targets individually instead of running full test suite
+- **Proper Solution**: Configure Xcode scheme to include OthelloTests target in Test action
+- **Impact**: Tests must be run manually; automated test execution in CI/hooks is limited
+- **Files**: 
+  - `.git/hooks/pre-commit` (contains workaround)
+  - `Othello/Othello.xcodeproj/xcshareddata/xcschemes/` (needs proper scheme configuration)
+- **Steps to Fix**:
+  1. Open project in Xcode
+  2. Edit "Othello" scheme
+  3. Add OthelloTests target to Test action
+  4. Make scheme shared (move to xcshareddata)
+  5. Update pre-commit hook to use `xcodebuild test -scheme Othello`
+
 ## Notes for AI Agents
 
 - **Update Frequency**: This TODO list should be updated whenever priorities change or new tasks are identified
 - **Task Granularity**: Break down large tasks into smaller, actionable items
 - **Dependencies**: Consider task dependencies when planning execution order
 - **Quality Gates**: Each phase must meet quality criteria before proceeding
+- **Workaround Tracking**: Always add temporary fixes to Technical Debt section above
 - **Flexibility**: Adjust plan based on discoveries during implementation
 
 ---

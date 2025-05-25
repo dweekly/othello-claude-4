@@ -59,14 +59,14 @@ enum Player: String, CaseIterable, Codable {
 /// Represents the type of player (human or AI)
 enum PlayerType: String, CaseIterable, Codable {
     case human
-    case ai
+    case artificial
 
     /// Localized name for UI display
     var localizedName: String {
         switch self {
         case .human:
             return NSLocalizedString("player.type.human", comment: "Human player")
-        case .ai:
+        case .artificial:
             return NSLocalizedString("player.type.ai", comment: "AI player")
         }
     }
@@ -81,7 +81,7 @@ struct PlayerInfo: Codable, Hashable {
     init(player: Player, type: PlayerType, aiDifficulty: AIDifficulty? = nil) {
         self.player = player
         self.type = type
-        self.aiDifficulty = type == .ai ? aiDifficulty : nil
+        self.aiDifficulty = type == .artificial ? aiDifficulty : nil
     }
 
     /// Whether this is a human player
@@ -91,7 +91,7 @@ struct PlayerInfo: Codable, Hashable {
 
     /// Whether this is an AI player
     var isAI: Bool {
-        return type == .ai
+        return type == .artificial
     }
 
     /// Display name including type and difficulty
@@ -99,7 +99,7 @@ struct PlayerInfo: Codable, Hashable {
         switch type {
         case .human:
             return player.localizedName
-        case .ai:
+        case .artificial:
             let difficulty = aiDifficulty?.localizedName ?? "Unknown"
             return "\(player.localizedName) (\(difficulty) AI)"
         }

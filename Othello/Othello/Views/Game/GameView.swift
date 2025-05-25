@@ -206,7 +206,7 @@ struct GameSetupView: View {
         case .humanVsAI:
             // Human always plays Black (goes first), AI always plays White
             blackPlayerInfo = PlayerInfo(player: .black, type: .human)
-            whitePlayerInfo = PlayerInfo(player: .white, type: .ai, aiDifficulty: selectedAIDifficulty)
+            whitePlayerInfo = PlayerInfo(player: .white, type: .artificial, aiDifficulty: selectedAIDifficulty)
         }
 
         viewModel.startNewGame(blackPlayer: blackPlayerInfo, whitePlayer: whitePlayerInfo)

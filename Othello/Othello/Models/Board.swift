@@ -104,8 +104,8 @@ struct Board: Hashable, Codable {
     ///   - colDirection: Column direction (-1, 0, 1)
     /// - Returns: Array of positions in that direction
     func positions(from start: BoardPosition,
-                          rowDirection: Int,
-                          colDirection: Int) -> [BoardPosition] {
+                   rowDirection: Int,
+                   colDirection: Int) -> [BoardPosition] {
         var positions: [BoardPosition] = []
         var current = start
 

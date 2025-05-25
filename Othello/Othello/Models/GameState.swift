@@ -26,13 +26,13 @@ struct GameState: Hashable, Codable {
     ///   - gameId: Unique identifier for this game
     ///   - startTime: When the game started
     init(board: Board,
-                currentPlayer: Player,
-                gamePhase: GamePhase,
-                moveHistory: MoveHistory = MoveHistory(),
-                blackPlayerInfo: PlayerInfo,
-                whitePlayerInfo: PlayerInfo,
-                gameId: UUID = UUID(),
-                startTime: Date = Date()) {
+         currentPlayer: Player,
+         gamePhase: GamePhase,
+         moveHistory: MoveHistory = MoveHistory(),
+         blackPlayerInfo: PlayerInfo,
+         whitePlayerInfo: PlayerInfo,
+         gameId: UUID = UUID(),
+         startTime: Date = Date()) {
         self.board = board
         self.currentPlayer = currentPlayer
         self.gamePhase = gamePhase
@@ -242,11 +242,11 @@ struct GameResult: Codable, Hashable {
     let timestamp: Date
 
     init(winner: Player?,
-                finalScore: Score,
-                moveCount: Int,
-                duration: TimeInterval,
-                gameId: UUID,
-                timestamp: Date = Date()) {
+         finalScore: Score,
+         moveCount: Int,
+         duration: TimeInterval,
+         gameId: UUID,
+         timestamp: Date = Date()) {
         self.winner = winner
         self.finalScore = finalScore
         self.moveCount = moveCount
@@ -303,11 +303,11 @@ extension GameState {
 
         let blackPlayerInfo = humanPlayer == .black
             ? PlayerInfo(player: .black, type: .human)
-            : PlayerInfo(player: .black, type: .ai, aiDifficulty: aiDifficulty)
+            : PlayerInfo(player: .black, type: .artificial, aiDifficulty: aiDifficulty)
 
         let whitePlayerInfo = humanPlayer == .white
             ? PlayerInfo(player: .white, type: .human)
-            : PlayerInfo(player: .white, type: .ai, aiDifficulty: aiDifficulty)
+            : PlayerInfo(player: .white, type: .artificial, aiDifficulty: aiDifficulty)
 
         return GameState(
             board: .initial,
@@ -328,8 +328,8 @@ extension GameState {
             board: .initial,
             currentPlayer: .black,
             gamePhase: .playing,
-            blackPlayerInfo: PlayerInfo(player: .black, type: .ai, aiDifficulty: blackDifficulty),
-            whitePlayerInfo: PlayerInfo(player: .white, type: .ai, aiDifficulty: whiteDifficulty)
+            blackPlayerInfo: PlayerInfo(player: .black, type: .artificial, aiDifficulty: blackDifficulty),
+            whitePlayerInfo: PlayerInfo(player: .white, type: .artificial, aiDifficulty: whiteDifficulty)
         )
     }
 }

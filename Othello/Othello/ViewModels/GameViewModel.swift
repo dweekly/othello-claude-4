@@ -18,13 +18,15 @@ class GameViewModel {
     private(set) var isAIThinking = false
     var showingGameCompletionAlert = false
     var showingNewGameConfirmation = false
+    private let gameMode: GameMode
 
-    init(gameEngine: GameEngineProtocol = GameEngine(), aiService: AIServiceProtocol = AIService()) {
+    init(gameMode: GameMode = .humanVsHuman, gameEngine: GameEngineProtocol = GameEngine(), aiService: AIServiceProtocol = AIService()) {
+        self.gameMode = gameMode
         self.gameEngine = gameEngine
         self.aiService = aiService
         self.gameState = gameEngine.newGame(
-            blackPlayer: PlayerInfo(player: .black, type: .human),
-            whitePlayer: PlayerInfo(player: .white, type: .human)
+            blackPlayer: PlayerInfo(player: .black, type: gameMode.blackPlayerType, aiDifficulty: gameMode.blackPlayerType == .artificial ? gameMode.aiDifficulty : nil),
+            whitePlayer: PlayerInfo(player: .white, type: gameMode.whitePlayerType, aiDifficulty: gameMode.whitePlayerType == .artificial ? gameMode.aiDifficulty : nil)
         )
         self.updateValidMoves()
     }
@@ -124,8 +126,8 @@ class GameViewModel {
 
     func confirmNewGame() {
         gameState = gameEngine.newGame(
-            blackPlayer: PlayerInfo(player: .black, type: .human),
-            whitePlayer: PlayerInfo(player: .white, type: .human)
+            blackPlayer: PlayerInfo(player: .black, type: gameMode.blackPlayerType, aiDifficulty: gameMode.blackPlayerType == .artificial ? gameMode.aiDifficulty : nil),
+            whitePlayer: PlayerInfo(player: .white, type: gameMode.whitePlayerType, aiDifficulty: gameMode.whitePlayerType == .artificial ? gameMode.aiDifficulty : nil)
         )
         updateValidMoves()
         isProcessingMove = false

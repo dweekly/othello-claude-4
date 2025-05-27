@@ -6,8 +6,12 @@ import SwiftUI
 
 @MainActor
 struct GameView: View {
-    @State private var viewModel = GameViewModel()
+    @State private var viewModel: GameViewModel
     @State private var showingGameSetup = false
+    
+    init(gameMode: GameMode = .humanVsHuman) {
+        _viewModel = State(initialValue: GameViewModel(gameMode: gameMode))
+    }
 
     var body: some View {
         Group {

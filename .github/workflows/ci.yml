@@ -68,7 +68,8 @@ jobs:
       
     - name: Build Xcode Project
       run: |
-        xcodebuild build -scheme Othello -destination 'platform=macOS'
+        echo "🔨 Building with strict Swift concurrency checking..."
+        xcodebuild build -scheme Othello -destination 'platform=macOS' SWIFT_STRICT_CONCURRENCY=complete
       
     - name: Run SwiftLint
       run: swiftlint lint --reporter github-actions-logging
@@ -77,7 +78,7 @@ jobs:
       run: |
         echo "🧪 Running Swift Testing framework tests..."
         # Run tests with verbose output to catch Swift Testing specific issues
-        xcodebuild test -scheme Othello -destination 'platform=macOS' -enableCodeCoverage YES -resultBundlePath TestResults.xcresult
+        xcodebuild test -scheme Othello -destination 'platform=macOS' -enableCodeCoverage YES -resultBundlePath TestResults.xcresult SWIFT_STRICT_CONCURRENCY=complete
         
     - name: Verify Swift Testing Results
       run: |

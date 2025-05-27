@@ -18,11 +18,17 @@ fi
 
 # 2. Build Check (10 seconds)
 echo "🔨 Testing Build..."
-if xcodebuild build -scheme Othello -destination 'platform=macOS' > /dev/null 2>&1; then
-    echo "✅ Build: Working"
+if xcodebuild build -scheme Othello -destination 'platform=macOS' SWIFT_STRICT_CONCURRENCY=complete > /dev/null 2>&1; then
+    echo "✅ Build: Working (with strict concurrency)"
 else
-    echo "❌ Build: Failed"
-    exit 1
+    echo "❌ Build: Failed (try without strict concurrency)"
+    if xcodebuild build -scheme Othello -destination 'platform=macOS' > /dev/null 2>&1; then
+        echo "⚠️  Build works locally but will fail in CI (concurrency issues)"
+        exit 1
+    else
+        echo "❌ Build: Failed completely"
+        exit 1
+    fi
 fi
 
 # 3. SwiftLint Check (5 seconds)

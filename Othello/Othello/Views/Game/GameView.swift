@@ -80,6 +80,7 @@ struct GameView: View {
     }
 }
 
+@MainActor
 struct GameSetupView: View {
     let viewModel: GameViewModel
     @Environment(\.dismiss)

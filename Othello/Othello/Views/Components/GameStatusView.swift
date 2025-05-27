@@ -8,6 +8,7 @@ import SwiftUI
 import UIKit
 #endif
 
+@MainActor
 struct GameStatusView: View {
     let viewModel: GameViewModel
 

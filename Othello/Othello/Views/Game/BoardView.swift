@@ -4,6 +4,7 @@
 //
 import SwiftUI
 
+@MainActor
 struct BoardView: View {
     let viewModel: GameViewModel
 

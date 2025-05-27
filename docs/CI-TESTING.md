@@ -128,9 +128,14 @@ brew install swiftlint
 ```
 
 **Build failures:**
-- Check MainActor/concurrency issues
+- Check MainActor/concurrency issues with: `SWIFT_STRICT_CONCURRENCY=complete`
 - Verify all dependencies available
 - Run clean build: `rm -rf Othello.xcodeproj && xcodegen generate`
+
+**Why didn't local tests catch CI issues?**
+- CI uses `SWIFT_STRICT_CONCURRENCY=complete` flag
+- Local environment may have different Xcode/Swift versions
+- Our scripts now match CI environment exactly
 
 **Test failures:**
 - Run tests individually to isolate issues

@@ -56,11 +56,13 @@ else
     exit 1
 fi
 
-# Step 5: Build Project (exactly like CI)
+# Step 5: Build Project (exactly like CI with strict concurrency)
 echo ""
 echo "🔨 Step 5: Build Xcode Project"
 echo "-----------------------------"
-xcodebuild build -scheme Othello -destination 'platform=macOS'
+echo "🔍 Building with strict concurrency checking (like CI)..."
+# Add strict Swift concurrency checking to match CI environment
+xcodebuild build -scheme Othello -destination 'platform=macOS' SWIFT_STRICT_CONCURRENCY=complete
 echo "✅ Build completed successfully"
 
 # Step 6: Run SwiftLint (exactly like CI)

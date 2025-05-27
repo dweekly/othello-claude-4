@@ -3,8 +3,23 @@
 # Quick CI Pipeline Health Check
 # Runs essential CI steps in ~30 seconds
 
+# Color codes
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
 echo "⚡ Quick CI Pipeline Health Check"
 echo "================================"
+
+# Check Xcode version
+CURRENT_XCODE=$(xcodebuild -version | head -1)
+CI_XCODE="16.2"
+if [[ "$CURRENT_XCODE" =~ "$CI_XCODE" ]]; then
+    echo -e "${GREEN}✅ Using CI-matching Xcode $CI_XCODE${NC}"
+else
+    echo -e "${YELLOW}⚠️  Using $CURRENT_XCODE (CI uses $CI_XCODE)${NC}"
+fi
+echo ""
 
 # 1. Project Generation Check (5 seconds)
 echo "🔧 Testing XcodeGen..."

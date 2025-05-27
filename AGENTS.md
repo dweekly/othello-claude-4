@@ -23,6 +23,13 @@ echo "Swift files: $(fd -e swift | wc -l) files" && \
 echo "Test files: $(fd -e swift | rg -i test | wc -l) test files"
 ```
 
+Information about the local environment, including available tools, versions of binaries, etc. should be cached in an
+ENVIRONMENT.md file in the project root that should not be checked in to git (since it is specific to the local
+execution environment). If this file is not present, create it and keep it up to date for the machine on which
+you are running. If you identify tools that would help you better work with the codebase, call them out to the user,
+prompt the user to install them, and add them to the list of required tools above in this AGENTS.md file - also update
+the human-centered README.md so human developers will have the right tools to be effective.
+
 ### Expected Environment State
 All tools should show ✅ status:
 - **Core search tools**: rg, fd, bat, eza  

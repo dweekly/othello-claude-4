@@ -22,6 +22,9 @@ DerivedData/
 *.perspectivev3
 !default.perspectivev3
 
+# Agent scratchpad for keeping track of tools environment available per-machine
+ENVIRONMENT.md
+
 ## Obj-C/Swift specific
 *.hmap
 

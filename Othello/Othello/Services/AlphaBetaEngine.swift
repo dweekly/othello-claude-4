@@ -85,27 +85,56 @@ final class AlphaBetaEngine: Sendable {
         let currentPlayer = gameState.currentPlayer
         let availableMoves = gameEngine.availableMoves(for: currentPlayer, in: gameState)
 
-        // If no moves available, switch player or end game
+        // If no moves available, handle empty moves
         if availableMoves.isEmpty {
-            let switchedState = gameState.switchingPlayer()
-            if switchedState.gamePhase == .finished {
-                let score = gameEngine.evaluatePosition(switchedState, for: params.targetPlayer)
-                return MoveEvaluation(move: nil, score: score, nodesEvaluated: 1)
-            }
-
-            return await alphaBetaRecursive(
-                gameState: switchedState,
-                params: AlphaBetaParams(
-                    depth: params.depth - 1,
-                    alpha: params.alpha,
-                    beta: params.beta,
-                    maximizingPlayer: !params.maximizingPlayer,
-                    targetPlayer: params.targetPlayer
-                ),
+            return await handleEmptyMoves(
+                gameState: gameState,
+                params: params,
                 gameEngine: gameEngine
             )
         }
 
+        // Evaluate moves with alpha-beta pruning
+        return await evaluateMoves(
+            availableMoves: availableMoves,
+            gameState: gameState,
+            params: params,
+            gameEngine: gameEngine,
+            currentPlayer: currentPlayer
+        )
+    }
+
+    private func handleEmptyMoves(
+        gameState: GameState,
+        params: AlphaBetaParams,
+        gameEngine: GameEngineProtocol
+    ) async -> MoveEvaluation {
+        let switchedState = gameState.switchingPlayer()
+        if switchedState.gamePhase == .finished {
+            let score = gameEngine.evaluatePosition(switchedState, for: params.targetPlayer)
+            return MoveEvaluation(move: nil, score: score, nodesEvaluated: 1)
+        }
+
+        return await alphaBetaRecursive(
+            gameState: switchedState,
+            params: AlphaBetaParams(
+                depth: params.depth - 1,
+                alpha: params.alpha,
+                beta: params.beta,
+                maximizingPlayer: !params.maximizingPlayer,
+                targetPlayer: params.targetPlayer
+            ),
+            gameEngine: gameEngine
+        )
+    }
+
+    private func evaluateMoves(
+        availableMoves: [BoardPosition],
+        gameState: GameState,
+        params: AlphaBetaParams,
+        gameEngine: GameEngineProtocol,
+        currentPlayer: Player
+    ) async -> MoveEvaluation {
         var currentAlpha = params.alpha
         var currentBeta = params.beta
         var totalNodes = 0
@@ -131,29 +160,58 @@ final class AlphaBetaEngine: Sendable {
             )
 
             totalNodes += evaluation.nodesEvaluated + 1
-            let score = evaluation.score
 
-            if params.maximizingPlayer {
-                if score > bestScore {
-                    bestScore = score
-                    bestMove = position
-                }
-                currentAlpha = max(currentAlpha, score)
-                if currentBeta <= currentAlpha {
-                    break // Beta cutoff
-                }
-            } else {
-                if score < bestScore {
-                    bestScore = score
-                    bestMove = position
-                }
-                currentBeta = min(currentBeta, score)
-                if currentBeta <= currentAlpha {
-                    break // Alpha cutoff
-                }
+            let (shouldBreak, newBest) = updateAlphaBeta(
+                score: evaluation.score,
+                position: position,
+                params: params,
+                currentAlpha: &currentAlpha,
+                currentBeta: &currentBeta,
+                bestScore: &bestScore
+            )
+
+            if let newBest = newBest {
+                bestMove = newBest
+            }
+
+            if shouldBreak {
+                break // Pruning occurred
             }
         }
 
         return MoveEvaluation(move: bestMove, score: bestScore, nodesEvaluated: totalNodes)
+    }
+
+    private func updateAlphaBeta(
+        score: Double,
+        position: BoardPosition,
+        params: AlphaBetaParams,
+        currentAlpha: inout Double,
+        currentBeta: inout Double,
+        bestScore: inout Double
+    ) -> (shouldBreak: Bool, newBestMove: BoardPosition?) {
+        var newBestMove: BoardPosition?
+
+        if params.maximizingPlayer {
+            if score > bestScore {
+                bestScore = score
+                newBestMove = position
+            }
+            currentAlpha = max(currentAlpha, score)
+            if currentBeta <= currentAlpha {
+                return (true, newBestMove) // Beta cutoff
+            }
+        } else {
+            if score < bestScore {
+                bestScore = score
+                newBestMove = position
+            }
+            currentBeta = min(currentBeta, score)
+            if currentBeta <= currentAlpha {
+                return (true, newBestMove) // Alpha cutoff
+            }
+        }
+
+        return (false, newBestMove)
     }
 }

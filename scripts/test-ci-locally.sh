@@ -5,8 +5,55 @@
 
 set -e  # Exit on any error
 
+# Color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
 echo "🚀 Starting Local CI/CD Pipeline Simulation..."
 echo "=================================================="
+
+# Check and switch to CI Xcode version if available
+CI_XCODE_VERSION="16.2"
+ORIGINAL_XCODE=$(xcode-select -p)
+SWITCHED_XCODE=false
+
+echo ""
+echo -e "${BLUE}🔄 Xcode Version Check${NC}"
+echo "----------------------"
+CURRENT_XCODE=$(xcodebuild -version | head -1)
+echo "Current Xcode: $CURRENT_XCODE"
+echo "GitHub Actions uses: Xcode $CI_XCODE_VERSION"
+
+# Check if we have the CI version installed
+if [ -d "/Applications/Xcode-${CI_XCODE_VERSION}.app" ]; then
+    echo -e "${YELLOW}Found Xcode $CI_XCODE_VERSION - switching to match CI environment${NC}"
+    sudo xcode-select -s "/Applications/Xcode-${CI_XCODE_VERSION}.app" 2>/dev/null || {
+        echo -e "${YELLOW}Note: Need sudo permission to switch Xcode versions${NC}"
+    }
+    if xcodebuild -version | grep -q "$CI_XCODE_VERSION"; then
+        echo -e "${GREEN}✅ Switched to Xcode $CI_XCODE_VERSION${NC}"
+        SWITCHED_XCODE=true
+    fi
+else
+    echo -e "${YELLOW}⚠️  Xcode $CI_XCODE_VERSION not found${NC}"
+    echo "To install it for exact CI matching:"
+    echo "  ./scripts/xcode-ci-setup.sh"
+    echo ""
+    echo "This will guide you through manual installation (xcodes doesn't work with hardware keys)"
+    echo ""
+    echo -n "Continue with current Xcode version? (y/N) "
+    read -r response
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+        echo ""
+        echo "Run ./scripts/xcode-ci-setup.sh for installation instructions"
+        exit 1
+    fi
+    echo -e "${YELLOW}⚠️  Using different Xcode version than CI${NC}"
+    echo "Results may differ from GitHub Actions"
+fi
 
 # Step 1: Clean environment (like fresh CI runner)
 echo ""
@@ -126,3 +173,13 @@ ls -la TestResults.xcresult test_results.json coverage.json 2>/dev/null || echo 
 echo ""
 echo "🚀 Your pipeline should work on GitHub Actions!"
 echo "💡 To clean up: rm -rf Othello.xcodeproj TestResults.xcresult *.json"
+
+# Restore original Xcode if we switched
+if [ "$SWITCHED_XCODE" = true ]; then
+    echo ""
+    echo -e "${BLUE}🔄 Restoring original Xcode version${NC}"
+    sudo xcode-select -s "$ORIGINAL_XCODE" 2>/dev/null || {
+        echo -e "${YELLOW}Note: Need sudo permission to restore Xcode version${NC}"
+    }
+    echo -e "${GREEN}✅ Restored to: $(xcodebuild -version | head -1)${NC}"
+fi

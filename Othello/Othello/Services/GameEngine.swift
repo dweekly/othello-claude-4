@@ -17,7 +17,7 @@ private struct PositionMetrics {
 ///
 /// This class implements all the game rules and logic for Othello,
 /// including move validation, piece capture, and game state management.
-final class GameEngine: GameEngineProtocol {
+final class GameEngine: GameEngineProtocol, Sendable {
     init() {}
 
     // MARK: - Move Validation

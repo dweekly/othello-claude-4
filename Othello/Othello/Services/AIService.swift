@@ -12,7 +12,7 @@ struct MoveEvaluation {
 }
 
 /// Production implementation of the AI service for Othello
-final class AIService: AIServiceProtocol {
+final class AIService: AIServiceProtocol, @unchecked Sendable {
     // MARK: - Properties
 
     private var calculationTask: Task<Move?, Never>?

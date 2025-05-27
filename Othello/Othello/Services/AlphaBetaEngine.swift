@@ -14,7 +14,7 @@ private struct AlphaBetaParams {
 }
 
 /// Alpha-beta pruning minimax algorithm implementation
-final class AlphaBetaEngine {
+final class AlphaBetaEngine: Sendable {
     func calculateBestMove(
         gameState: GameState,
         player: Player,

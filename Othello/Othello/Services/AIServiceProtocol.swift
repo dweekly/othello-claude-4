@@ -8,7 +8,7 @@ import Foundation
 ///
 /// This protocol abstracts AI move calculation, making it easy to test
 /// and potentially swap AI implementations.
-protocol AIServiceProtocol {
+protocol AIServiceProtocol: Sendable {
     // MARK: - Move Calculation
 
     /// Calculates the best move for an AI player asynchronously

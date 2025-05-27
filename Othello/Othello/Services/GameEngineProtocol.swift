@@ -8,7 +8,7 @@ import Foundation
 ///
 /// This protocol abstracts the game rules and logic, making it easy to test
 /// and potentially swap implementations in the future.
-protocol GameEngineProtocol {
+protocol GameEngineProtocol: Sendable {
     // MARK: - Move Validation
 
     /// Checks if a move is valid for the given game state

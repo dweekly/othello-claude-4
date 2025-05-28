@@ -61,7 +61,8 @@ struct HowToPlayView: View {
             VStack(alignment: .leading, spacing: 12) {
                 ruleItem(
                     number: "1",
-                    text: "The game begins with 4 discs placed in the center: 2 black and 2 white in a diagonal pattern."
+                    text: "The game begins with 4 discs placed in the center: " +
+                          "2 black and 2 white in a diagonal pattern."
                 )
 
                 ruleItem(
@@ -71,17 +72,21 @@ struct HowToPlayView: View {
 
                 ruleItem(
                     number: "3",
-                    text: "A valid move must outflank at least one opponent disc. This means placing your disc so that one or more of your opponent's discs are between your new disc and another disc of your color."
+                    text: "A valid move must outflank at least one opponent disc. " +
+                          "This means placing your disc so that one or more of your opponent's discs " +
+                          "are between your new disc and another disc of your color."
                 )
 
                 ruleItem(
                     number: "4",
-                    text: "All outflanked discs are flipped to your color. Flips can happen horizontally, vertically, or diagonally."
+                    text: "All outflanked discs are flipped to your color. " +
+                          "Flips can happen horizontally, vertically, or diagonally."
                 )
 
                 ruleItem(
                     number: "5",
-                    text: "If a player cannot make a valid move, they must pass. If neither player can move, the game ends."
+                    text: "If a player cannot make a valid move, they must pass. " +
+                          "If neither player can move, the game ends."
                 )
 
                 ruleItem(

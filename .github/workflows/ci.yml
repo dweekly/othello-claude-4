@@ -12,14 +12,19 @@ env:
 jobs:
   test:
     name: Test Suite
-    runs-on: macos-latest
-    # Use default Xcode version available in GitHub Actions
+    runs-on: macos-15
+    # Use macOS 15 for Xcode 16.x and Swift Testing support
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    # Using default Xcode version available in macos-latest
+    - name: Show Xcode version
+      run: |
+        echo "🔍 Xcode version check:"
+        xcodebuild -version
+        echo "Swift version:"
+        swift --version
         
     - name: Install XcodeGen and SwiftLint
       run: |
@@ -117,7 +122,7 @@ jobs:
 
   quality-gates:
     name: Quality Gates
-    runs-on: macos-latest
+    runs-on: macos-15
     needs: test
     
     steps:
@@ -152,7 +157,7 @@ jobs:
 
   ios-build:
     name: iOS Build Verification
-    runs-on: macos-latest
+    runs-on: macos-15
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
@@ -177,7 +182,7 @@ jobs:
 
   dependency-check:
     name: Dependency Audit
-    runs-on: macos-latest
+    runs-on: macos-15
     
     steps:
     - name: Checkout code
@@ -196,7 +201,7 @@ jobs:
 
   release:
     name: Release Management
-    runs-on: macos-latest
+    runs-on: macos-15
     needs: [test, quality-gates, ios-build]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
@@ -217,7 +222,7 @@ jobs:
 
   summary:
     name: Pipeline Summary
-    runs-on: macos-latest
+    runs-on: macos-15
     needs: [test, quality-gates, dependency-check]
     if: always()
     

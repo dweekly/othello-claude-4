@@ -19,7 +19,6 @@ opt_in_rules:
   - explicit_init
   - fallthrough
   - fatal_error_message
-  - file_header
   - first_where
   - flatmap_over_map_reduce
   - identical_operands
@@ -54,8 +53,6 @@ opt_in_rules:
   - toggle_bool
   - trailing_closure
   - unneeded_parentheses_in_closure_argument
-  - unused_import
-  - unused_private_declaration
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
@@ -64,20 +61,11 @@ opt_in_rules:
 # Disabled rules
 disabled_rules:
   - todo # We'll allow TODO comments during development
-  - line_length # We'll handle this with custom configuration
-  - file_header # Allow flexible file headers for now
   - no_force_unwrapping # Allow force unwrapping in safe contexts
   - model_protocol_conformance # Allow flexible model conformance
   - extension_access_modifier # Allow explicit access modifiers in extensions
 
 # Custom rule configurations
-line_length:
-  warning: 120
-  error: 150
-  ignores_function_declarations: true
-  ignores_comments: true
-  ignores_urls: true
-
 function_body_length:
   warning: 50
   error: 100
@@ -102,19 +90,9 @@ nesting:
   type_level:
     warning: 2
     error: 3
-  statement_level:
+  function_level:
     warning: 5
     error: 10
-
-# File header requirement
-file_header:
-  required_pattern: |
-    \/\/
-    \/\/ .*\.swift
-    \/\/ Othello iOS
-    \/\/
-    \/\/ Created.*
-    \/\/
 
 # Identifier naming
 identifier_name:
@@ -186,3 +164,4 @@ custom_rules:
 analyzer_rules:
   - explicit_self
   - unused_import
+  - unused_declaration

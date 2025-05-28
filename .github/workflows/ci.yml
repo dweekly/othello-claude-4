@@ -85,7 +85,7 @@ jobs:
         # Check if tests actually ran (Swift Testing should show specific output)
         if [ -d "TestResults.xcresult" ]; then
           echo "Test results bundle created successfully"
-          xcrun xcresulttool get --format json --path TestResults.xcresult > test_results.json
+          xcrun xcresulttool get --legacy --format json --path TestResults.xcresult > test_results.json
           # Check for Swift Testing specific indicators
           if grep -q "Swift Testing" test_results.json 2>/dev/null; then
             echo "✅ Swift Testing framework detected in results"

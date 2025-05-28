@@ -8,7 +8,6 @@ import SwiftUI
 struct GameView: View {
     @State private var viewModel: GameViewModel
     @State private var showingGameSetup = false
-    
     init(gameMode: GameMode = .humanVsHuman) {
         _viewModel = State(initialValue: GameViewModel(gameMode: gameMode))
     }
@@ -29,7 +28,7 @@ struct GameView: View {
                         .padding(.horizontal, 20)
                         .padding(.vertical, 20)
 
-                    // Button at bottom - fixed height  
+                    // Button at bottom - fixed height
                     Button("New Game") {
                         showingGameSetup = true
                     }

@@ -5,26 +5,26 @@ struct MainMenuView: View {
     @State private var showHowToPlay = false
     @State private var selectedGameMode: GameMode?
     @State private var selectedDifficulty: AIDifficulty = .medium
-    
+
     enum GameMode: Identifiable {
         case humanVsHuman
         case humanVsAI
-        
+
         var id: Self { self }
     }
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 30) {
                 titleSection
-                
+
                 VStack(spacing: 20) {
                     gameModesSection
-                    
+
                     menuButtonsSection
                 }
                 .padding(.horizontal, 40)
-                
+
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -42,26 +42,26 @@ struct MainMenuView: View {
             }
         }
     }
-    
+
     private var titleSection: some View {
         VStack(spacing: 10) {
             Text("Othello")
                 .font(.system(size: 60, weight: .bold, design: .rounded))
                 .foregroundColor(.primary)
-            
+
             Text("Classic Strategy Game")
                 .font(.title3)
                 .foregroundColor(.secondary)
         }
         .padding(.top, 60)
     }
-    
+
     private var gameModesSection: some View {
         VStack(spacing: 16) {
             Text("New Game")
                 .font(.headline)
                 .foregroundColor(.secondary)
-            
+
             Button(action: {
                 selectedGameMode = .humanVsHuman
             }) {
@@ -81,7 +81,7 @@ struct MainMenuView: View {
                 .cornerRadius(12)
             }
             .buttonStyle(.plain)
-            
+
             VStack(spacing: 12) {
                 Button(action: {
                     selectedGameMode = .humanVsAI
@@ -101,7 +101,7 @@ struct MainMenuView: View {
                     .cornerRadius(12)
                 }
                 .buttonStyle(.plain)
-                
+
                 if selectedGameMode == nil || selectedGameMode == .humanVsAI {
                     difficultySelector
                         .transition(.asymmetric(
@@ -112,23 +112,23 @@ struct MainMenuView: View {
             }
         }
     }
-    
+
     private var difficultySelector: some View {
         HStack(spacing: 12) {
             Text("Difficulty:")
                 .font(.caption)
                 .foregroundColor(.secondary)
-            
+
             difficultyButton(for: .easy)
             difficultyButton(for: .medium)
             difficultyButton(for: .hard)
         }
         .padding(.horizontal)
     }
-    
+
     private func difficultyButton(for difficulty: AIDifficulty) -> some View {
         let isSelected = selectedDifficulty == difficulty
-        
+
         return Button(action: {
             selectedDifficulty = difficulty
         }) {
@@ -142,12 +142,12 @@ struct MainMenuView: View {
         }
         .buttonStyle(.plain)
     }
-    
+
     private var menuButtonsSection: some View {
         VStack(spacing: 16) {
             Divider()
                 .padding(.vertical, 10)
-            
+
             Button(action: {
                 showHowToPlay = true
             }) {
@@ -160,7 +160,7 @@ struct MainMenuView: View {
                 .font(.body)
             }
             .buttonStyle(.plain)
-            
+
             Button(action: {
                 showSettings = true
             }) {
